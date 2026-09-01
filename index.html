@@ -229,7 +229,7 @@
 
     <section class="section" id="business-application-section">
       <h2>Business Application</h2>
-      <p class="muted">Signed-in business owners can apply to be listed. New applications should stay pending until approved.</p>
+      <p class="muted">Signed-in business owners can apply to be listed. New applications stay pending until approved.</p>
 
       <div id="business-status" class="status info"></div>
 
@@ -294,10 +294,16 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const supabaseUrl = "https://ijtirnmwyabqzasoufij.supabase.co";
-    const supabaseKey = "YOUR_ANON_KEY_HERE";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqdGlybm13eWFicXphc291ZmlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNTYzMjksImV4cCI6MjEwMzgzMjMyOX0.ZNaX0kd-MhI0SAcsLjsqbKKJX1vN2rtGt2l2RLbIkno";
 
     const { createClient } = supabase;
-    const client = createClient(supabaseUrl, supabaseKey);
+    const client = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
 
     const authStatus = document.getElementById("auth-status");
     const businessStatus = document.getElementById("business-status");
@@ -340,9 +346,24 @@
     }
 
     async function getCurrentUser() {
-      const { data, error } = await client.auth.getUser();
-      if (error) return null;
-      return data?.user || null;
+      const { data: sessionData, error: sessionError } = await client.auth.getSession();
+
+      if (sessionError) {
+        return null;
+      }
+
+      const sessionUser = sessionData?.session?.user;
+      if (sessionUser) {
+        return sessionUser;
+      }
+
+      const { data: userData, error: userError } = await client.auth.getUser();
+
+      if (userError) {
+        return null;
+      }
+
+      return userData?.user || null;
     }
 
     async function checkSession() {
@@ -406,14 +427,17 @@
 
       showStatus(authStatus, "Signing you in...", "info");
 
-      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      const { data, error } = await client.auth.signInWithPassword({
+        email,
+        password
+      });
 
       if (error) {
         showStatus(authStatus, "Sign-in error: " + error.message, "error");
         return;
       }
 
-      const user = data?.user;
+      const user = data?.user || data?.session?.user || null;
 
       if (user) {
         showLoggedInState(user.email);
