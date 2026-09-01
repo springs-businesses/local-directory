@@ -141,11 +141,32 @@
     </section>
 
     <section class="section" id="customer-signup">
-      <h2>Customer Sign Up</h2>
-      <p class="muted" style="text-align:center;">
-        This will be connected to Supabase in the next step.
-      </p>
-    </section>
+  <h2>Customer Sign Up</h2>
+  <p class="muted" style="text-align:center;">
+    Create a customer account to save favorites and leave reviews.
+  </p>
+
+  <form id="customerSignupForm" style="max-width: 520px; margin: 20px auto 0;">
+    <div style="margin-bottom: 14px;">
+      <label for="customerFullName" style="display:block; margin-bottom: 6px; font-weight: bold;">Full Name</label>
+      <input id="customerFullName" type="text" required style="width:100%; padding:12px; border:1px solid #cbd5df; border-radius:8px;">
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label for="customerEmail" style="display:block; margin-bottom: 6px; font-weight: bold;">Email</label>
+      <input id="customerEmail" type="email" required style="width:100%; padding:12px; border:1px solid #cbd5df; border-radius:8px;">
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label for="customerPassword" style="display:block; margin-bottom: 6px; font-weight: bold;">Password</label>
+      <input id="customerPassword" type="password" required style="width:100%; padding:12px; border:1px solid #cbd5df; border-radius:8px;">
+    </div>
+
+    <button type="submit" class="button" style="width:100%;">Create Customer Account</button>
+
+    <p id="customerSignupMessage" class="small" style="margin-top:14px; text-align:center;"></p>
+  </form>
+</section>
 
     <section class="section" id="business-owner-signup">
       <h2>Business Owner Sign Up</h2>
@@ -164,6 +185,39 @@
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     window.supabase = supabase;
+    const customerSignupForm = document.getElementById("customerSignupForm");
+const customerSignupMessage = document.getElementById("customerSignupMessage");
+
+customerSignupForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  customerSignupMessage.textContent = "Creating account...";
+
+  const fullName = document.getElementById("customerFullName").value.trim();
+  const email = document.getElementById("customerEmail").value.trim();
+  const password = document.getElementById("customerPassword").value;
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        user_type: "customer",
+        full_name: fullName
+      }
+    }
+  });
+
+  if (error) {
+    customerSignupMessage.textContent = error.message;
+    customerSignupMessage.style.color = "crimson";
+    return;
+  }
+
+  customerSignupMessage.textContent = "Account created. Check your email to confirm your account.";
+  customerSignupMessage.style.color = "green";
+  customerSignupForm.reset();
+});
   </script>
 </body>
 </html>
