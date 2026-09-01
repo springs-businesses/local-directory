@@ -4,220 +4,423 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Springs Local Small Businesses</title>
-  <meta name="description" content="Find local small businesses by category." />
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f7f7f2;
-      color: #12304a;
+      background: #0f172a;
+      color: #f8fafc;
+      line-height: 1.5;
     }
 
     header {
-      background: #12304a;
-      color: white;
-      padding: 20px;
-      text-align: center;
+      background: #111827;
+      padding: 18px 20px;
+      border-bottom: 1px solid #334155;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .sub {
+      margin-top: 6px;
+      color: #cbd5e1;
+      font-size: 0.98rem;
     }
 
     main {
-      max-width: 1000px;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 40px 20px 60px;
+      padding: 24px 16px 50px;
     }
 
-    h1, h2 {
-      text-align: center;
-    }
-
-    .hero {
-      text-align: center;
-      padding: 30px 0 40px;
-    }
-
-    .hero p {
-      max-width: 700px;
-      margin: 0 auto 20px;
-      line-height: 1.6;
-    }
-
-    .button-row {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    .button {
-      display: inline-block;
-      padding: 14px 20px;
-      background: #f5b940;
-      color: #12304a;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .button.secondary {
-      background: #dbe8ef;
-    }
-
+    .hero,
     .section {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      margin-top: 24px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 20px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 20px;
-    }
-
-    .card {
-      border: 1px solid #d7e1ea;
-      border-radius: 10px;
-      padding: 16px;
-      background: #fff;
-    }
-
-    .card h3 {
+    h2 {
       margin-top: 0;
-      color: #12304a;
+      margin-bottom: 10px;
+      font-size: 1.4rem;
+    }
+
+    p {
+      color: #e2e8f0;
     }
 
     .muted {
-      color: #5f6c78;
+      color: #cbd5e1;
+    }
+
+    .status {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      display: none;
+      white-space: pre-wrap;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.info {
+      background: #0f172a;
+      border: 1px solid #475569;
+      color: #e2e8f0;
+    }
+
+    .status.success {
+      background: #052e16;
+      border: 1px solid #166534;
+      color: #dcfce7;
+    }
+
+    .status.error {
+      background: #450a0a;
+      border: 1px solid #991b1b;
+      color: #fee2e2;
+    }
+
+    form {
+      margin-top: 16px;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 10px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 1rem;
+    }
+
+    input::placeholder {
+      color: #94a3b8;
+    }
+
+    button {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      background: #22c55e;
+      color: #052e16;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background: #4ade80;
+    }
+
+    .secondary-btn {
+      background: #38bdf8;
+      color: #082f49;
+    }
+
+    .secondary-btn:hover {
+      background: #7dd3fc;
+    }
+
+    .danger-btn {
+      background: #f87171;
+      color: #450a0a;
+    }
+
+    .danger-btn:hover {
+      background: #fca5a5;
+    }
+
+    .account-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #0f172a;
+      border: 1px solid #475569;
+      display: none;
+    }
+
+    .account-box.show {
+      display: block;
+    }
+
+    .account-email {
+      font-weight: 700;
+      color: #86efac;
+      word-break: break-word;
     }
 
     .small {
       font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    footer {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.92rem;
+      padding: 10px 16px 30px;
+    }
+
+    @media (max-width: 700px) {
+      header h1 {
+        font-size: 1.45rem;
+      }
+
+      .hero,
+      .section {
+        padding: 18px;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <h2>Springs Local Small Businesses</h2>
+    <h1>Springs Local Small Businesses</h1>
+    <div class="sub">Find local services. Support small businesses. Build trust locally.</div>
   </header>
 
   <main>
     <section class="hero">
-      <h1>Find Local Help. Support Local Businesses.</h1>
+      <h2>Welcome</h2>
       <p>
-        Browse local businesses by category, save favorites, and leave reviews.
-        Business owners can apply to be listed after approval.
+        This is the start of your local business directory platform. Customers will be able to create accounts,
+        browse service categories, save favorites, and leave reviews.
       </p>
-
-      <div class="button-row">
-        <a class="button" href="#categories">Browse Categories</a>
-        <a class="button secondary" href="#business-owner-signup">Business Owner Sign Up</a>
-        <a class="button secondary" href="#customer-signup">Customer Sign Up</a>
-      </div>
+      <p class="muted">
+        Right now, this page is focused on getting customer account signup and login working correctly first.
+      </p>
     </section>
 
-    <section class="section" id="categories">
-      <h2>Categories</h2>
-      <p class="muted small" style="text-align:center;">
-        These are starter categories. Later, these will load from your database.
-      </p>
+    <section class="section" id="customer-account">
+      <h2>Customer Account</h2>
+      <p class="muted">Create an account or sign in to save favorites and leave reviews later.</p>
 
-      <div class="grid">
-        <div class="card"><h3>Home Services</h3><p class="muted">Repairs, cleaning, lawn care, and more.</p></div>
-        <div class="card"><h3>Auto Services</h3><p class="muted">Repairs, detailing, installs, and more.</p></div>
-        <div class="card"><h3>Pet Services</h3><p class="muted">Walking, grooming, sitting, and more.</p></div>
-        <div class="card"><h3>Tech Services</h3><p class="muted">Repair, setup, support, and web help.</p></div>
-        <div class="card"><h3>Personal Services</h3><p class="muted">Beauty, coaching, and lifestyle help.</p></div>
-        <div class="card"><h3>Creative Services</h3><p class="muted">Photo, design, media, and branding.</p></div>
-        <div class="card"><h3>Event Services</h3><p class="muted">Planning, rentals, decor, and DJs.</p></div>
-        <div class="card"><h3>Health & Wellness</h3><p class="muted">Fitness, wellness, and self-care.</p></div>
-        <div class="card"><h3>Other Services</h3><p class="muted">Flexible catch-all category.</p></div>
+      <div id="auth-status" class="status info"></div>
+
+      <form id="signup-form">
+        <h3>Create account</h3>
+
+        <label for="signup-email">Email</label>
+        <input
+          type="email"
+          id="signup-email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+
+        <label for="signup-password">Password</label>
+        <input
+          type="password"
+          id="signup-password"
+          placeholder="Create a password"
+          autocomplete="new-password"
+          required
+        />
+
+        <button type="submit">Customer Sign Up</button>
+      </form>
+
+      <form id="signin-form">
+        <h3>Sign in</h3>
+
+        <label for="signin-email">Email</label>
+        <input
+          type="email"
+          id="signin-email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+
+        <label for="signin-password">Password</label>
+        <input
+          type="password"
+          id="signin-password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required
+        />
+
+        <button type="submit" class="secondary-btn">Sign In</button>
+      </form>
+
+      <div id="account-box" class="account-box">
+        <div class="small">Signed in as:</div>
+        <div id="account-email" class="account-email"></div>
+        <button id="signout-btn" class="danger-btn" type="button">Sign Out</button>
       </div>
-    </section>
-
-    <section class="section" id="customer-signup">
-  <h2>Customer Sign Up</h2>
-  <p class="muted" style="text-align:center;">
-    Create a customer account to save favorites and leave reviews.
-  </p>
-
-  <form id="customerSignupForm" style="max-width: 520px; margin: 20px auto 0;">
-    <div style="margin-bottom: 14px;">
-      <label for="customerFullName" style="display:block; margin-bottom: 6px; font-weight: bold;">Full Name</label>
-      <input id="customerFullName" type="text" required style="width:100%; padding:12px; border:1px solid #cbd5df; border-radius:8px;">
-    </div>
-
-    <div style="margin-bottom: 14px;">
-      <label for="customerEmail" style="display:block; margin-bottom: 6px; font-weight: bold;">Email</label>
-      <input id="customerEmail" type="email" required style="width:100%; padding:12px; border:1px solid #cbd5df; border-radius:8px;">
-    </div>
-
-    <div style="margin-bottom: 14px;">
-      <label for="customerPassword" style="display:block; margin-bottom: 6px; font-weight: bold;">Password</label>
-      <input id="customerPassword" type="password" required style="width:100%; padding:12px; border:1px solid #cbd5df; border-radius:8px;">
-    </div>
-
-    <button type="submit" class="button" style="width:100%;">Create Customer Account</button>
-
-    <p id="customerSignupMessage" class="small" style="margin-top:14px; text-align:center;"></p>
-  </form>
-</section>
-
-    <section class="section" id="business-owner-signup">
-      <h2>Business Owner Sign Up</h2>
-      <p class="muted" style="text-align:center;">
-        This will also be connected to Supabase in the next step.
-      </p>
     </section>
   </main>
 
-  <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  <footer>
+    Springs Local Small Businesses
+  </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
     const supabaseUrl = "https://ijtirnmwyabqzasoufij.supabase.co";
-    const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqdGlybm13eWFicXphc291ZmlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNTYzMjksImV4cCI6MjEwMzgzMjMyOX0.ZNaX0kd-MhI0SAcsLjsqbKKJX1vN2rtGt2l2RLbIkno";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqdGlybm13eWFicXphc291ZmlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNTYzMjksImV4cCI6MjEwMzgzMjMyOX0.ZNaX0kd-MhI0SAcsLjsqbKKJX1vN2rtGt2l2RLbIkno";
 
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    const { createClient } = supabase;
+    const client = createClient(supabaseUrl, supabaseKey);
 
-    window.supabase = supabase;
-    const customerSignupForm = document.getElementById("customerSignupForm");
-const customerSignupMessage = document.getElementById("customerSignupMessage");
+    const authStatus = document.getElementById("auth-status");
+    const signupForm = document.getElementById("signup-form");
+    const signinForm = document.getElementById("signin-form");
+    const accountBox = document.getElementById("account-box");
+    const accountEmail = document.getElementById("account-email");
+    const signoutBtn = document.getElementById("signout-btn");
 
-customerSignupForm?.addEventListener("submit", async (event) => {
-  event.preventDefault();
+    function showStatus(message, type = "info") {
+      authStatus.textContent = message;
+      authStatus.className = "status show " + type;
+    }
 
-  customerSignupMessage.textContent = "Creating account...";
+    function showLoggedInState(email) {
+      accountEmail.textContent = email || "Signed in";
+      accountBox.classList.add("show");
+      signupForm.style.display = "none";
+      signinForm.style.display = "none";
+    }
 
-  const fullName = document.getElementById("customerFullName").value.trim();
-  const email = document.getElementById("customerEmail").value.trim();
-  const password = document.getElementById("customerPassword").value;
+    function showLoggedOutState() {
+      accountBox.classList.remove("show");
+      signupForm.style.display = "block";
+      signinForm.style.display = "block";
+    }
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        user_type: "customer",
-        full_name: fullName
+    async function checkSession() {
+      const { data, error } = await client.auth.getSession();
+
+      if (error) {
+        showStatus("Session check error: " + error.message, "error");
+        showLoggedOutState();
+        return;
+      }
+
+      const user = data?.session?.user;
+
+      if (user) {
+        showLoggedInState(user.email);
+        showStatus("You are signed in.", "success");
+      } else {
+        showLoggedOutState();
+        showStatus("You are currently signed out.", "info");
       }
     }
-  });
 
-  if (error) {
-    customerSignupMessage.textContent = error.message;
-    customerSignupMessage.style.color = "crimson";
-    return;
-  }
+    signupForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-  customerSignupMessage.textContent = "Account created. Check your email to confirm your account.";
-  customerSignupMessage.style.color = "green";
-  customerSignupForm.reset();
-});
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value;
+
+      showStatus("Creating your account...", "info");
+
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.href
+        }
+      });
+
+      if (error) {
+        showStatus("Signup error: " + error.message, "error");
+        return;
+      }
+
+      if (data?.user && !data?.session) {
+        showStatus(
+          "Account created. Check your email and click the confirmation link, then come back here and sign in.",
+          "success"
+        );
+      } else if (data?.session?.user) {
+        showLoggedInState(data.session.user.email);
+        showStatus("Signup worked and you are signed in.", "success");
+      } else {
+        showStatus("Signup request sent. Check your email for the next step.", "success");
+      }
+
+      signupForm.reset();
+    });
+
+    signinForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("signin-email").value.trim();
+      const password = document.getElementById("signin-password").value;
+
+      showStatus("Signing you in...", "info");
+
+      const { data, error } = await client.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        showStatus("Sign-in error: " + error.message, "error");
+        return;
+      }
+
+      const user = data?.user;
+
+      if (user) {
+        showLoggedInState(user.email);
+        showStatus("Signed in successfully.", "success");
+      } else {
+        showStatus("Sign-in finished, but no user session was returned.", "error");
+      }
+
+      signinForm.reset();
+    });
+
+    signoutBtn.addEventListener("click", async function () {
+      showStatus("Signing you out...", "info");
+
+      const { error } = await client.auth.signOut();
+
+      if (error) {
+        showStatus("Sign-out error: " + error.message, "error");
+        return;
+      }
+
+      showLoggedOutState();
+      showStatus("You have been signed out.", "success");
+    });
+
+    client.auth.onAuthStateChange(function (event, session) {
+      if (session?.user) {
+        showLoggedInState(session.user.email);
+      } else {
+        showLoggedOutState();
+      }
+    });
+
+    checkSession();
   </script>
 </body>
 </html>
