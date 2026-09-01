@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Springs Local Small Businesses</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -40,8 +38,7 @@
       padding: 24px 16px 50px;
     }
 
-    .hero,
-    .section {
+    .hero, .section {
       background: #1e293b;
       border: 1px solid #334155;
       border-radius: 14px;
@@ -49,10 +46,9 @@
       margin-bottom: 20px;
     }
 
-    h2 {
+    h2, h3 {
       margin-top: 0;
       margin-bottom: 10px;
-      font-size: 1.4rem;
     }
 
     p {
@@ -72,22 +68,17 @@
       white-space: pre-wrap;
     }
 
-    .status.show {
-      display: block;
-    }
-
+    .status.show { display: block; }
     .status.info {
       background: #0f172a;
       border: 1px solid #475569;
       color: #e2e8f0;
     }
-
     .status.success {
       background: #052e16;
       border: 1px solid #166534;
       color: #dcfce7;
     }
-
     .status.error {
       background: #450a0a;
       border: 1px solid #991b1b;
@@ -104,9 +95,9 @@
       font-weight: 700;
     }
 
-    input {
+    input, textarea, select {
       width: 100%;
-      padding: 12px 12px;
+      padding: 12px;
       border-radius: 10px;
       border: 1px solid #475569;
       background: #0f172a;
@@ -114,7 +105,12 @@
       font-size: 1rem;
     }
 
-    input::placeholder {
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    input::placeholder, textarea::placeholder {
       color: #94a3b8;
     }
 
@@ -130,29 +126,23 @@
       font-size: 1rem;
     }
 
-    button:hover {
-      background: #4ade80;
-    }
+    button:hover { background: #4ade80; }
 
     .secondary-btn {
       background: #38bdf8;
       color: #082f49;
     }
 
-    .secondary-btn:hover {
-      background: #7dd3fc;
-    }
+    .secondary-btn:hover { background: #7dd3fc; }
 
     .danger-btn {
       background: #f87171;
       color: #450a0a;
     }
 
-    .danger-btn:hover {
-      background: #fca5a5;
-    }
+    .danger-btn:hover { background: #fca5a5; }
 
-    .account-box {
+    .account-box, .application-box {
       margin-top: 18px;
       padding: 16px;
       border-radius: 12px;
@@ -161,9 +151,7 @@
       display: none;
     }
 
-    .account-box.show {
-      display: block;
-    }
+    .show { display: block; }
 
     .account-email {
       font-weight: 700;
@@ -184,14 +172,8 @@
     }
 
     @media (max-width: 700px) {
-      header h1 {
-        font-size: 1.45rem;
-      }
-
-      .hero,
-      .section {
-        padding: 18px;
-      }
+      header h1 { font-size: 1.45rem; }
+      .hero, .section { padding: 18px; }
     }
   </style>
 </head>
@@ -204,18 +186,13 @@
   <main>
     <section class="hero">
       <h2>Welcome</h2>
-      <p>
-        This is the start of your local business directory platform. Customers will be able to create accounts,
-        browse service categories, save favorites, and leave reviews.
-      </p>
-      <p class="muted">
-        Right now, this page is focused on getting customer account signup and login working correctly first.
-      </p>
+      <p>This is the start of your local business directory platform.</p>
+      <p class="muted">Customers can sign in, and business owners can submit an application for review.</p>
     </section>
 
     <section class="section" id="customer-account">
       <h2>Customer Account</h2>
-      <p class="muted">Create an account or sign in to save favorites and leave reviews later.</p>
+      <p class="muted">Create an account or sign in.</p>
 
       <div id="auth-status" class="status info"></div>
 
@@ -223,22 +200,10 @@
         <h3>Create account</h3>
 
         <label for="signup-email">Email</label>
-        <input
-          type="email"
-          id="signup-email"
-          placeholder="you@example.com"
-          autocomplete="email"
-          required
-        />
+        <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email" required />
 
         <label for="signup-password">Password</label>
-        <input
-          type="password"
-          id="signup-password"
-          placeholder="Create a password"
-          autocomplete="new-password"
-          required
-        />
+        <input type="password" id="signup-password" placeholder="Create a password" autocomplete="new-password" required />
 
         <button type="submit">Customer Sign Up</button>
       </form>
@@ -247,22 +212,10 @@
         <h3>Sign in</h3>
 
         <label for="signin-email">Email</label>
-        <input
-          type="email"
-          id="signin-email"
-          placeholder="you@example.com"
-          autocomplete="email"
-          required
-        />
+        <input type="email" id="signin-email" placeholder="you@example.com" autocomplete="email" required />
 
         <label for="signin-password">Password</label>
-        <input
-          type="password"
-          id="signin-password"
-          placeholder="Enter your password"
-          autocomplete="current-password"
-          required
-        />
+        <input type="password" id="signin-password" placeholder="Enter your password" autocomplete="current-password" required />
 
         <button type="submit" class="secondary-btn">Sign In</button>
       </form>
@@ -271,6 +224,65 @@
         <div class="small">Signed in as:</div>
         <div id="account-email" class="account-email"></div>
         <button id="signout-btn" class="danger-btn" type="button">Sign Out</button>
+      </div>
+    </section>
+
+    <section class="section" id="business-application-section">
+      <h2>Business Application</h2>
+      <p class="muted">Signed-in business owners can apply to be listed. New applications should stay pending until approved.</p>
+
+      <div id="business-status" class="status info"></div>
+
+      <div id="application-locked" class="application-box show">
+        <p>Please sign in first before submitting a business application.</p>
+      </div>
+
+      <div id="application-box" class="application-box">
+        <form id="business-form">
+          <label for="business-name">Business name</label>
+          <input type="text" id="business-name" required />
+
+          <label for="business-phone">Phone number</label>
+          <input type="text" id="business-phone" required />
+
+          <label for="business-email">Business email</label>
+          <input type="email" id="business-email" required />
+
+          <label for="business-website">Website</label>
+          <input type="text" id="business-website" placeholder="https://example.com" />
+
+          <label for="business-description">Description</label>
+          <textarea id="business-description" required></textarea>
+
+          <label for="service-area">Service area</label>
+          <input type="text" id="service-area" placeholder="Colorado Springs, Fountain, Monument" required />
+
+          <label for="years-in-business">Years in business</label>
+          <input type="number" id="years-in-business" min="0" step="1" required />
+
+          <label for="bonded-status">Bonded</label>
+          <select id="bonded-status">
+            <option value="">Not provided</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+
+          <label for="insured-status">Insured</label>
+          <select id="insured-status">
+            <option value="">Not provided</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+
+          <label for="licensed-status">Licensed</label>
+          <select id="licensed-status">
+            <option value="">Not provided</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+
+          <button type="submit">Submit Business Application</button>
+        </form>
       </div>
     </section>
   </main>
@@ -282,21 +294,35 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const supabaseUrl = "https://ijtirnmwyabqzasoufij.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqdGlybm13eWFicXphc291ZmlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNTYzMjksImV4cCI6MjEwMzgzMjMyOX0.ZNaX0kd-MhI0SAcsLjsqbKKJX1vN2rtGt2l2RLbIkno";
+    const supabaseKey = "YOUR_ANON_KEY_HERE";
 
     const { createClient } = supabase;
     const client = createClient(supabaseUrl, supabaseKey);
 
     const authStatus = document.getElementById("auth-status");
+    const businessStatus = document.getElementById("business-status");
     const signupForm = document.getElementById("signup-form");
     const signinForm = document.getElementById("signin-form");
+    const businessForm = document.getElementById("business-form");
     const accountBox = document.getElementById("account-box");
     const accountEmail = document.getElementById("account-email");
     const signoutBtn = document.getElementById("signout-btn");
+    const applicationLocked = document.getElementById("application-locked");
+    const applicationBox = document.getElementById("application-box");
 
-    function showStatus(message, type = "info") {
-      authStatus.textContent = message;
-      authStatus.className = "status show " + type;
+    function showStatus(el, message, type = "info") {
+      el.textContent = message;
+      el.className = "status show " + type;
+    }
+
+    function setApplicationVisibility(user) {
+      if (user) {
+        applicationLocked.classList.remove("show");
+        applicationBox.classList.add("show");
+      } else {
+        applicationLocked.classList.add("show");
+        applicationBox.classList.remove("show");
+      }
     }
 
     function showLoggedInState(email) {
@@ -310,13 +336,20 @@
       accountBox.classList.remove("show");
       signupForm.style.display = "block";
       signinForm.style.display = "block";
+      setApplicationVisibility(null);
+    }
+
+    async function getCurrentUser() {
+      const { data, error } = await client.auth.getUser();
+      if (error) return null;
+      return data?.user || null;
     }
 
     async function checkSession() {
       const { data, error } = await client.auth.getSession();
 
       if (error) {
-        showStatus("Session check error: " + error.message, "error");
+        showStatus(authStatus, "Session check error: " + error.message, "error");
         showLoggedOutState();
         return;
       }
@@ -325,10 +358,11 @@
 
       if (user) {
         showLoggedInState(user.email);
-        showStatus("You are signed in.", "success");
+        setApplicationVisibility(user);
+        showStatus(authStatus, "You are signed in.", "success");
       } else {
         showLoggedOutState();
-        showStatus("You are currently signed out.", "info");
+        showStatus(authStatus, "You are currently signed out.", "info");
       }
     }
 
@@ -338,31 +372,27 @@
       const email = document.getElementById("signup-email").value.trim();
       const password = document.getElementById("signup-password").value;
 
-      showStatus("Creating your account...", "info");
+      showStatus(authStatus, "Creating your account...", "info");
 
       const { data, error } = await client.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: window.location.href
-        }
+        options: { emailRedirectTo: window.location.href }
       });
 
       if (error) {
-        showStatus("Signup error: " + error.message, "error");
+        showStatus(authStatus, "Signup error: " + error.message, "error");
         return;
       }
 
       if (data?.user && !data?.session) {
-        showStatus(
-          "Account created. Check your email and click the confirmation link, then come back here and sign in.",
-          "success"
-        );
+        showStatus(authStatus, "Account created. Check your email, confirm it, then sign in.", "success");
       } else if (data?.session?.user) {
         showLoggedInState(data.session.user.email);
-        showStatus("Signup worked and you are signed in.", "success");
+        setApplicationVisibility(data.session.user);
+        showStatus(authStatus, "Signup worked and you are signed in.", "success");
       } else {
-        showStatus("Signup request sent. Check your email for the next step.", "success");
+        showStatus(authStatus, "Signup request sent. Check your email for the next step.", "success");
       }
 
       signupForm.reset();
@@ -374,15 +404,12 @@
       const email = document.getElementById("signin-email").value.trim();
       const password = document.getElementById("signin-password").value;
 
-      showStatus("Signing you in...", "info");
+      showStatus(authStatus, "Signing you in...", "info");
 
-      const { data, error } = await client.auth.signInWithPassword({
-        email,
-        password
-      });
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
 
       if (error) {
-        showStatus("Sign-in error: " + error.message, "error");
+        showStatus(authStatus, "Sign-in error: " + error.message, "error");
         return;
       }
 
@@ -390,31 +417,80 @@
 
       if (user) {
         showLoggedInState(user.email);
-        showStatus("Signed in successfully.", "success");
+        setApplicationVisibility(user);
+        showStatus(authStatus, "Signed in successfully.", "success");
       } else {
-        showStatus("Sign-in finished, but no user session was returned.", "error");
+        showStatus(authStatus, "Sign-in finished, but no user session was returned.", "error");
       }
 
       signinForm.reset();
     });
 
     signoutBtn.addEventListener("click", async function () {
-      showStatus("Signing you out...", "info");
+      showStatus(authStatus, "Signing you out...", "info");
 
       const { error } = await client.auth.signOut();
 
       if (error) {
-        showStatus("Sign-out error: " + error.message, "error");
+        showStatus(authStatus, "Sign-out error: " + error.message, "error");
         return;
       }
 
       showLoggedOutState();
-      showStatus("You have been signed out.", "success");
+      showStatus(authStatus, "You have been signed out.", "success");
+    });
+
+    businessForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const user = await getCurrentUser();
+
+      if (!user) {
+        showStatus(businessStatus, "You must be signed in before submitting a business application.", "error");
+        setApplicationVisibility(null);
+        return;
+      }
+
+      showStatus(businessStatus, "Submitting business application...", "info");
+
+      const payload = {
+        owner_user_id: user.id,
+        business_name: document.getElementById("business-name").value.trim(),
+        phone: document.getElementById("business-phone").value.trim(),
+        email: document.getElementById("business-email").value.trim(),
+        website: document.getElementById("business-website").value.trim() || null,
+        description: document.getElementById("business-description").value.trim(),
+        service_area: document.getElementById("service-area").value.trim(),
+        years_in_business: Number(document.getElementById("years-in-business").value),
+        bonded_status: document.getElementById("bonded-status").value || null,
+        insured_status: document.getElementById("insured-status").value || null,
+        licensed_status: document.getElementById("licensed-status").value || null,
+        approval_status: "pending"
+      };
+
+      const { data, error } = await client
+        .from("businesses")
+        .insert(payload)
+        .select();
+
+      if (error) {
+        showStatus(businessStatus, "Business application error: " + error.message, "error");
+        return;
+      }
+
+      businessForm.reset();
+      showStatus(
+        businessStatus,
+        "Business application submitted successfully. It is now pending approval." +
+        (data && data[0]?.business_name ? " Submitted: " + data[0].business_name : ""),
+        "success"
+      );
     });
 
     client.auth.onAuthStateChange(function (event, session) {
       if (session?.user) {
         showLoggedInState(session.user.email);
+        setApplicationVisibility(session.user);
       } else {
         showLoggedOutState();
       }
