@@ -1782,10 +1782,12 @@ Weed removal"></textarea>
     }
 
     function showDonationMessage() {
-      alert(
-        "The donation button will be connected to a secure Stripe donation page next. No donation link has been added yet."
-      );
-    }
+  window.open(
+    "https://buy.stripe.com/00w4gzcLB5Wg30zeKx28801",
+    "_blank",
+    "noopener,noreferrer"
+  );
+}
 
     function setupEvents() {
       categorySearchForm.addEventListener("submit", (event) => {
@@ -1823,9 +1825,9 @@ Weed removal"></textarea>
   });
 });
 
-      [donateButton, heroDonateButton].forEach((button) => {
-        button.addEventListener("click", showDonationMessage);
-      });
+     [donateButton, heroDonateButton].forEach((button) => {
+  button.addEventListener("click", openStripeCheckout);
+});
 
       signupForm.addEventListener("submit", handleSignup);
       signinForm.addEventListener("submit", handleSignin);
