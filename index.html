@@ -3,20 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A free Colorado Springs directory connecting customers with reviewed local small businesses.">
+  <meta name="description" content="A free Colorado Springs directory connecting residents with reviewed local small businesses.">
   <title>Springs Local Small Businesses</title>
 
   <style>
     :root {
       --navy: #102a43;
+      --navy-dark: #071c2e;
       --blue: #1769aa;
+      --blue-dark: #0f578d;
       --gold: #f4b942;
+      --gold-dark: #d89213;
       --green: #167a4b;
+      --green-dark: #0d5935;
       --soft: #f6f9fc;
       --line: #d9e2ec;
       --text: #1d2939;
       --muted: #667085;
       --white: #ffffff;
+      --danger: #b42318;
+      --danger-soft: #fff1f0;
+      --success: #087443;
+      --success-soft: #e9f8ef;
+      --shadow: 0 12px 28px rgba(16, 42, 67, 0.12);
     }
 
     * {
@@ -35,13 +44,19 @@
       line-height: 1.5;
     }
 
+    body.modal-open {
+      overflow: hidden;
+    }
+
     a {
       color: inherit;
       text-decoration: none;
     }
 
     button,
-    input {
+    input,
+    textarea,
+    select {
       font: inherit;
     }
 
@@ -57,30 +72,31 @@
     .site-header {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
       background: var(--white);
       border-bottom: 1px solid var(--line);
     }
 
     .header-row {
-      min-height: 74px;
+      min-height: 76px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 18px;
     }
 
     .brand {
       color: var(--navy);
-      font-size: 1.08rem;
-      font-weight: 800;
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
     }
 
     .brand small {
       display: block;
       color: var(--muted);
-      font-size: 0.72rem;
-      letter-spacing: 0.06em;
+      font-size: 0.7rem;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
     }
 
@@ -89,6 +105,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      align-items: center;
     }
 
     .button {
@@ -96,10 +113,22 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 8px;
       padding: 10px 16px;
       border: 1px solid transparent;
       border-radius: 10px;
       font-weight: 800;
+      transition: 0.18s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: 0.62;
+      transform: none;
     }
 
     .button-outline {
@@ -113,21 +142,45 @@
       background: var(--blue);
     }
 
+    .button-primary:hover {
+      background: var(--blue-dark);
+    }
+
     .button-donate {
       color: #5b3a00;
       background: var(--gold);
     }
 
+    .button-donate:hover {
+      background: var(--gold-dark);
+    }
+
+    .button-light {
+      color: var(--green-dark);
+      background: var(--white);
+    }
+
+    .button-link {
+      min-height: auto;
+      padding: 0;
+      color: var(--blue);
+      background: transparent;
+      border: 0;
+      font-weight: 800;
+    }
+
     .hero {
-      padding: 76px 0;
+      padding: 76px 0 70px;
       color: var(--white);
-      background: linear-gradient(135deg, #071c2e, var(--navy));
+      background:
+        radial-gradient(circle at 84% 18%, rgba(244, 185, 66, 0.25), transparent 28%),
+        linear-gradient(135deg, var(--navy-dark), var(--navy));
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 34px;
+      grid-template-columns: 1.18fr 0.82fr;
+      gap: 38px;
       align-items: center;
     }
 
@@ -135,9 +188,10 @@
       display: inline-block;
       margin-bottom: 14px;
       padding: 6px 10px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 999px;
       color: #fff3d6;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
       font-size: 0.8rem;
       font-weight: 800;
       letter-spacing: 0.05em;
@@ -152,48 +206,69 @@
     }
 
     h1 {
+      max-width: 760px;
       margin-bottom: 16px;
-      font-size: clamp(2.2rem, 5vw, 4rem);
-      line-height: 1.05;
-      letter-spacing: -0.04em;
+      font-size: clamp(2.25rem, 5vw, 4.15rem);
+      line-height: 1.04;
+      letter-spacing: -0.045em;
     }
 
-    .hero p {
-      max-width: 650px;
+    .hero-copy {
+      max-width: 670px;
       margin-bottom: 26px;
       color: #dce9f2;
       font-size: 1.08rem;
     }
 
     .hero-card {
-      padding: 26px;
+      padding: 27px;
       color: var(--text);
       background: var(--white);
       border-radius: 18px;
+      box-shadow: var(--shadow);
     }
 
     .hero-card h2 {
+      margin-bottom: 8px;
       color: var(--navy);
-      font-size: 1.35rem;
+      font-size: 1.4rem;
     }
 
     .hero-card p {
       color: var(--muted);
-      font-size: 1rem;
     }
 
-    .hero-card ul {
-      padding-left: 20px;
-      color: var(--text);
+    .mini-list {
+      display: grid;
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .mini-list div {
+      display: flex;
+      gap: 10px;
+      align-items: center;
       font-weight: 700;
     }
 
+    .check {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      color: var(--success);
+      background: var(--success-soft);
+      border-radius: 50%;
+      font-size: 0.85rem;
+    }
+
     .section {
-      padding: 70px 0;
+      padding: 72px 0;
     }
 
     .section-heading {
-      max-width: 740px;
+      max-width: 760px;
       margin: 0 auto 32px;
       text-align: center;
     }
@@ -201,7 +276,8 @@
     .section-heading h2 {
       margin-bottom: 10px;
       color: var(--navy);
-      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-size: clamp(1.85rem, 3vw, 2.6rem);
+      letter-spacing: -0.03em;
     }
 
     .section-heading p {
@@ -216,7 +292,7 @@
     }
 
     .category-button {
-      min-height: 118px;
+      min-height: 116px;
       padding: 20px;
       text-align: left;
       color: var(--navy);
@@ -225,12 +301,18 @@
       border-radius: 16px;
       font-size: 1rem;
       font-weight: 800;
+      transition: 0.18s ease;
     }
 
     .category-button:hover {
-      border-color: var(--blue);
-      box-shadow: 0 8px 18px rgba(16, 42, 67, 0.12);
-      transform: translateY(-2px);
+      border-color: #8ebce0;
+      box-shadow: 0 10px 20px rgba(16, 42, 67, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .category-button:focus-visible {
+      outline: 3px solid rgba(23, 105, 170, 0.3);
+      outline-offset: 2px;
     }
 
     .category-icon {
@@ -241,7 +323,7 @@
 
     .other-services {
       margin-top: 26px;
-      padding: 30px;
+      padding: 31px;
       color: var(--white);
       background: var(--navy);
       border-radius: 18px;
@@ -249,10 +331,11 @@
 
     .other-services h3 {
       margin-bottom: 8px;
-      font-size: 1.45rem;
+      font-size: 1.5rem;
     }
 
     .other-services p {
+      margin-bottom: 18px;
       color: #dce9f2;
     }
 
@@ -263,29 +346,158 @@
 
     .search-row input {
       width: 100%;
-      min-height: 50px;
-      padding: 12px 14px;
-      border: 0;
+    }
+
+    .field,
+    .search-row input,
+    textarea,
+    select {
+      min-height: 46px;
+      padding: 11px 13px;
+      color: var(--text);
+      background: var(--white);
+      border: 1px solid var(--line);
       border-radius: 10px;
       outline: none;
+    }
+
+    .field:focus,
+    .search-row input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.13);
+    }
+
+    textarea {
+      min-height: 112px;
+      resize: vertical;
+    }
+
+    .search-panel {
+      display: none;
+      margin-top: 26px;
+      padding: 28px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .search-panel.visible {
+      display: block;
+    }
+
+    .search-panel-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .search-panel h3 {
+      margin-bottom: 5px;
+      color: var(--navy);
+      font-size: 1.35rem;
+    }
+
+    .search-panel p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .search-panel-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .search-panel-form input {
+      flex: 1;
+    }
+
+    .results-message {
+      min-height: 24px;
+      margin-bottom: 14px;
+      color: var(--muted);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .business-card {
+      padding: 21px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .business-card h4 {
+      margin: 0 0 6px;
+      color: var(--navy);
+      font-size: 1.16rem;
+    }
+
+    .business-card p {
+      margin-bottom: 10px;
+      color: var(--muted);
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 12px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 8px;
+      color: var(--blue-dark);
+      background: #eaf5ff;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .business-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .business-links a {
+      color: var(--blue);
+    }
+
+    .saved-search-area {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
     }
 
     .how-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      gap: 20px;
     }
 
     .how-card {
-      padding: 25px;
+      padding: 26px;
       background: var(--white);
       border: 1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 17px;
     }
 
     .number {
-      width: 38px;
-      height: 38px;
+      width: 39px;
+      height: 39px;
       display: grid;
       place-items: center;
       margin-bottom: 14px;
@@ -298,6 +510,7 @@
     .how-card h3 {
       margin-bottom: 8px;
       color: var(--navy);
+      font-size: 1.14rem;
     }
 
     .how-card p {
@@ -306,7 +519,7 @@
     }
 
     .business-banner {
-      padding: 38px;
+      padding: 40px;
       color: var(--white);
       background: var(--green);
       border-radius: 18px;
@@ -316,37 +529,50 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 25px;
+      gap: 26px;
     }
 
     .business-banner h2 {
       margin-bottom: 8px;
-      font-size: 2rem;
+      font-size: clamp(1.75rem, 3vw, 2.35rem);
     }
 
     .business-banner p {
-      max-width: 710px;
+      max-width: 700px;
       margin-bottom: 0;
       color: #daf2e4;
     }
 
-    .button-light {
-      flex: 0 0 auto;
-      color: #0d5935;
-      background: var(--white);
+    .donate-card {
+      max-width: 780px;
+      padding: 35px;
+      margin: 0 auto;
+      text-align: center;
+      background: #fffaf0;
+      border: 1px solid #f7dda5;
+      border-radius: 18px;
+    }
+
+    .donate-card h2 {
+      margin-bottom: 10px;
+      color: #5b3a00;
+    }
+
+    .donate-card p {
+      color: #755a2d;
     }
 
     .footer {
       padding: 34px 0;
       color: #c7d7e4;
-      background: #071c2e;
+      background: var(--navy-dark);
     }
 
     .footer-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 18px;
+      gap: 16px;
     }
 
     .footer p {
@@ -354,12 +580,188 @@
       font-size: 0.9rem;
     }
 
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(7, 28, 46, 0.68);
+    }
+
+    .modal.visible {
+      display: flex;
+    }
+
+    .modal-content {
+      width: min(100%, 650px);
+      max-height: min(86vh, 800px);
+      overflow-y: auto;
+      padding: 27px;
+      background: var(--white);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      margin-bottom: 5px;
+      color: var(--navy);
+    }
+
+    .modal-header p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .close-button {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      color: var(--navy);
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--navy);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .form-help {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.83rem;
+    }
+
+    .form-message {
+      display: none;
+      padding: 11px 13px;
+      margin: 0 0 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .form-message.visible {
+      display: block;
+    }
+
+    .form-message.success {
+      color: var(--success);
+      background: var(--success-soft);
+      border: 1px solid #b8e6c9;
+    }
+
+    .form-message.error {
+      color: var(--danger);
+      background: var(--danger-soft);
+      border: 1px solid #ffc9c4;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      min-height: 42px;
+      color: var(--muted);
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-weight: 800;
+    }
+
+    .auth-tab.active {
+      color: var(--white);
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .auth-view {
+      display: none;
+    }
+
+    .auth-view.active {
+      display: block;
+    }
+
+    .account-summary {
+      padding: 14px;
+      margin-bottom: 16px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+    }
+
+    .account-summary strong {
+      color: var(--navy);
+    }
+
+    .account-summary p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .empty-state {
+      padding: 20px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--soft);
+      border: 1px dashed #b8c8d7;
+      border-radius: 12px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     @media (max-width: 820px) {
-      .hero-grid,
-      .business-banner-row {
+      .hero-grid {
         grid-template-columns: 1fr;
-        flex-direction: column;
-        align-items: flex-start;
       }
 
       .category-grid,
@@ -367,8 +769,13 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .header-row,
+      .business-banner-row,
       .footer-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-row {
         align-items: flex-start;
         flex-direction: column;
         padding: 14px 0;
@@ -381,21 +788,38 @@
       }
 
       .category-grid,
-      .how-grid {
+      .how-grid,
+      .results-grid,
+      .form-grid {
         grid-template-columns: 1fr;
       }
 
-      .search-row {
+      .header-actions,
+      .hero-actions {
+        width: 100%;
+      }
+
+      .header-actions .button,
+      .hero-actions .button {
+        width: 100%;
+      }
+
+      .search-row,
+      .search-panel-form {
         flex-direction: column;
       }
 
-      .search-row .button {
+      .search-row .button,
+      .search-panel-form .button {
         width: 100%;
       }
 
-      .hero-actions .button,
-      .header-actions .button {
-        width: 100%;
+      .other-services,
+      .business-banner,
+      .donate-card,
+      .search-panel,
+      .modal-content {
+        padding: 23px;
       }
     }
   </style>
@@ -409,10 +833,10 @@
         <small>Small Businesses</small>
       </a>
 
-      <nav class="header-actions">
+      <nav class="header-actions" aria-label="Main navigation">
         <a class="button button-outline" href="#services">Find Services</a>
-        <a class="button button-outline" href="#businesses">For Businesses</a>
-        <a class="button button-primary" href="#account">Create Account</a>
+        <button class="button button-outline" id="header-apply-button" type="button">For Businesses</button>
+        <button class="button button-primary" id="account-button" type="button">Create Account</button>
       </nav>
     </div>
   </header>
@@ -423,25 +847,27 @@
         <div>
           <span class="eyebrow">Colorado Springs, Colorado</span>
           <h1>Find the right local small business for the job.</h1>
-          <p>
-            A free directory created to help Colorado Springs residents find reviewed,
-            local small businesses by the exact service they need.
+          <p class="hero-copy">
+            A free directory helping Colorado Springs residents find reviewed local small businesses
+            by the exact service they need.
           </p>
 
           <div class="hero-actions">
-            <a class="button button-donate" href="#donate">Donate to Keep This Free</a>
-            <a class="button button-outline" href="#businesses">Apply to Be Listed</a>
+            <button class="button button-donate" id="hero-donate-button" type="button">Donate to Keep This Free</button>
+            <button class="button button-outline" id="hero-apply-button" type="button">Apply to Be Listed</button>
           </div>
         </div>
 
         <aside class="hero-card">
           <h2>Built for useful local results</h2>
           <p>Businesses apply first and are reviewed before they appear in the directory.</p>
-          <ul>
-            <li>Search by service, not endless lists</li>
-            <li>Save searches with a free account</li>
-            <li>Support Colorado Springs small businesses</li>
-          </ul>
+
+          <div class="mini-list">
+            <div><span class="check">✓</span> Search by service, not endless lists</div>
+            <div><span class="check">✓</span> Save searches with a free account</div>
+            <div><span class="check">✓</span> Support Colorado Springs small businesses</div>
+          </div>
+
           <a class="button button-primary" href="#services">Find a Service</a>
         </aside>
       </div>
@@ -452,71 +878,13 @@
         <div class="section-heading">
           <h2>Find a Local Service</h2>
           <p>
-            Choose a category, then search for the specific job you need. You will only see
-            approved businesses that offer matching services.
+            Choose a category, then search for the specific job you need. Results show only
+            approved businesses assigned to that category.
           </p>
         </div>
 
-        <div class="category-grid">
-          <button class="category-button" type="button" data-category="Handyman Services">
-            <span class="category-icon">🛠️</span>
-            Handyman Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Cleaning Services">
-            <span class="category-icon">🧽</span>
-            Cleaning Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Junk Removal Services">
-            <span class="category-icon">🚚</span>
-            Junk Removal Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Moving Services">
-            <span class="category-icon">📦</span>
-            Moving Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Auto Services">
-            <span class="category-icon">🚗</span>
-            Auto Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Tech Services">
-            <span class="category-icon">💻</span>
-            Tech Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Pet Services">
-            <span class="category-icon">🐾</span>
-            Pet Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Catering and Event Services">
-            <span class="category-icon">🎉</span>
-            Catering &amp; Event Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Lawn Services">
-            <span class="category-icon">🌱</span>
-            Lawn Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Tree Services">
-            <span class="category-icon">🌳</span>
-            Tree Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Fence Services">
-            <span class="category-icon">🪵</span>
-            Fence Services
-          </button>
-
-          <button class="category-button" type="button" data-category="Plumbing Services">
-            <span class="category-icon">🔧</span>
-            Plumbing Services
-          </button>
+        <div class="category-grid" id="category-grid" aria-label="Service categories">
+          <div class="empty-state">Loading service categories...</div>
         </div>
 
         <div class="other-services">
@@ -527,25 +895,56 @@
           </p>
 
           <form id="other-services-form" class="search-row">
+            <label class="sr-only" for="other-services-search">Search all other services</label>
             <input
               id="other-services-search"
               type="search"
               placeholder="Example: furnace repair, roof leak repair, mobile notary"
-              aria-label="Search all other services"
+              autocomplete="off"
             >
             <button class="button button-donate" type="submit">Search</button>
           </form>
         </div>
+
+        <section class="search-panel" id="search-panel" aria-live="polite">
+          <div class="search-panel-top">
+            <div>
+              <h3 id="search-panel-title">Search results</h3>
+              <p id="search-panel-description">Search approved local businesses.</p>
+            </div>
+            <button class="button-link" id="close-search-panel" type="button">Close</button>
+          </div>
+
+          <form class="search-panel-form" id="category-search-form">
+            <label class="sr-only" for="category-search-input">Search within selected category</label>
+            <input
+              class="field"
+              id="category-search-input"
+              type="search"
+              placeholder="Describe the service you need"
+              autocomplete="off"
+            >
+            <button class="button button-primary" type="submit">Search</button>
+          </form>
+
+          <div class="results-message" id="results-message"></div>
+          <div class="results-grid" id="results-grid"></div>
+
+          <div class="saved-search-area">
+            <button class="button button-outline" id="save-search-button" type="button" disabled>
+              Save This Search
+            </button>
+          </div>
+        </section>
       </div>
     </section>
 
-    <section class="section" id="account">
+    <section class="section" id="how-it-works">
       <div class="container">
         <div class="section-heading">
-          <h2>How It Will Work</h2>
+          <h2>How It Works</h2>
           <p>
-            Customer accounts, saved searches, business applications, and approved local listings
-            are being built step by step.
+            A simple, free way to find the right local help and support Colorado Springs small businesses.
           </p>
         </div>
 
@@ -553,19 +952,19 @@
           <article class="how-card">
             <div class="number">1</div>
             <h3>Search for the job</h3>
-            <p>Choose a major category or search for a specific service under All Other Services.</p>
+            <p>Choose a major service category or type an exact service under All Other Services.</p>
           </article>
 
           <article class="how-card">
             <div class="number">2</div>
-            <h3>Find approved businesses</h3>
-            <p>Only businesses you review and approve will appear in public directory results.</p>
+            <h3>Find reviewed businesses</h3>
+            <p>Only businesses reviewed and approved by the directory can appear in public results.</p>
           </article>
 
           <article class="how-card">
             <div class="number">3</div>
-            <h3>Create a free account</h3>
-            <p>Customers will be able to save service searches and return whenever they need help.</p>
+            <h3>Save useful searches</h3>
+            <p>Create a free customer account to save a service search and return to it later.</p>
           </article>
         </div>
       </div>
@@ -578,12 +977,11 @@
             <div>
               <h2>Are you a local small-business owner?</h2>
               <p>
-                Apply to be listed for free. Tell us the exact services you provide, and your
-                application will be reviewed before your listing is shown to customers.
+                Apply to be listed for free. Describe the exact services you provide, and your
+                application will stay private until it is reviewed.
               </p>
             </div>
-
-            <a class="button button-light" href="#application-coming-soon">Apply to Be Listed</a>
+            <button class="button button-light" id="business-apply-button" type="button">Apply to Be Listed</button>
           </div>
         </div>
       </div>
@@ -591,13 +989,13 @@
 
     <section class="section" id="donate">
       <div class="container">
-        <div class="section-heading">
+        <div class="donate-card">
           <h2>Help Keep This Directory Free</h2>
           <p>
-            Donations will help cover the basic hosting, maintenance, and ongoing improvements
-            needed to keep this directory free for customers and local small businesses.
+            Donations will help with basic hosting, maintenance, and future improvements while
+            keeping the directory free for customers and local small businesses.
           </p>
-          <a class="button button-donate" href="#donation-link-coming-soon">Donate to Keep This Free</a>
+          <button class="button button-donate" id="donate-button" type="button">Donate to Keep This Free</button>
         </div>
       </div>
     </section>
@@ -610,41 +1008,860 @@
     </div>
   </footer>
 
-  <script>
-    const categoryButtons = document.querySelectorAll(".category-button");
+  <div class="modal" id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 id="auth-modal-title">Customer Account</h2>
+          <p id="auth-modal-subtitle">Create a free account to save searches.</p>
+        </div>
+        <button class="close-button" data-close-modal="auth-modal" type="button" aria-label="Close account window">×</button>
+      </div>
+
+      <div id="logged-out-account">
+        <div class="auth-tabs">
+          <button class="auth-tab active" type="button" data-auth-tab="signup">Create Account</button>
+          <button class="auth-tab" type="button" data-auth-tab="signin">Sign In</button>
+        </div>
+
+        <div class="auth-view active" id="signup-view">
+          <div class="form-message" id="signup-message"></div>
+          <form id="signup-form">
+            <div class="form-group">
+              <label for="signup-name">Your name</label>
+              <input class="field" id="signup-name" type="text" maxlength="100" autocomplete="name" required>
+            </div>
+            <div class="form-group">
+              <label for="signup-email">Email address</label>
+              <input class="field" id="signup-email" type="email" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+              <label for="signup-password">Create a password</label>
+              <input class="field" id="signup-password" type="password" minlength="8" autocomplete="new-password" required>
+              <p class="form-help">Use at least 8 characters.</p>
+            </div>
+            <button class="button button-primary" id="signup-submit" type="submit">Create Free Account</button>
+          </form>
+        </div>
+
+        <div class="auth-view" id="signin-view">
+          <div class="form-message" id="signin-message"></div>
+          <form id="signin-form">
+            <div class="form-group">
+              <label for="signin-email">Email address</label>
+              <input class="field" id="signin-email" type="email" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+              <label for="signin-password">Password</label>
+              <input class="field" id="signin-password" type="password" autocomplete="current-password" required>
+            </div>
+            <button class="button button-primary" id="signin-submit" type="submit">Sign In</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="logged-in-account" hidden>
+        <div class="account-summary">
+          <strong id="account-email"></strong>
+          <p>You are signed in. Your saved searches appear below.</p>
+        </div>
+
+        <div class="form-message" id="account-message"></div>
+        <div id="saved-searches-list"></div>
+
+        <div style="margin-top: 18px;">
+          <button class="button button-outline" id="signout-button" type="button">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="application-modal" role="dialog" aria-modal="true" aria-labelledby="application-modal-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 id="application-modal-title">Apply to Be Listed</h2>
+          <p>Applying is free. Every application is reviewed before a listing can appear publicly.</p>
+        </div>
+        <button class="close-button" data-close-modal="application-modal" type="button" aria-label="Close application window">×</button>
+      </div>
+
+      <div class="form-message" id="application-message"></div>
+
+      <form id="application-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="business-name">Business name</label>
+            <input class="field" id="business-name" name="business_name" type="text" maxlength="160" required>
+          </div>
+
+          <div class="form-group">
+            <label for="contact-name">Your name</label>
+            <input class="field" id="contact-name" name="contact_name" type="text" maxlength="120" required>
+          </div>
+
+          <div class="form-group">
+            <label for="contact-email">Business email</label>
+            <input class="field" id="contact-email" name="contact_email" type="email" maxlength="255" required>
+          </div>
+
+          <div class="form-group">
+            <label for="contact-phone">Business phone <span aria-hidden="true">(optional)</span></label>
+            <input class="field" id="contact-phone" name="contact_phone" type="tel" maxlength="50">
+          </div>
+
+          <div class="form-group">
+            <label for="website-url">Website <span aria-hidden="true">(optional)</span></label>
+            <input class="field" id="website-url" name="website_url" type="url" maxlength="500" placeholder="https://">
+          </div>
+
+          <div class="form-group">
+            <label for="social-url">Social-media link <span aria-hidden="true">(optional)</span></label>
+            <input class="field" id="social-url" name="social_url" type="url" maxlength="500" placeholder="https://">
+          </div>
+
+          <div class="form-group full">
+            <label for="service-area">Service area</label>
+            <input class="field" id="service-area" name="service_area" type="text" maxlength="200" value="Colorado Springs, Colorado" required>
+          </div>
+
+          <div class="form-group full">
+            <label for="application-category">Best-fitting main category</label>
+            <select id="application-category" name="category_notes">
+              <option value="">Choose the closest category (optional)</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label for="services-submitted">Exact services you offer</label>
+            <textarea id="services-submitted" name="services_submitted" maxlength="5000" required placeholder="Type one exact service per line. Example:
+Lawn mowing
+Weekly yard maintenance
+Mulch installation
+Weed removal"></textarea>
+            <p class="form-help">Please be specific. Your wording may be reviewed and cleaned up before the listing is approved.</p>
+          </div>
+
+          <div class="form-group full">
+            <label for="verification-notes">Anything that helps us verify your business <span aria-hidden="true">(optional)</span></label>
+            <textarea id="verification-notes" name="verification_notes" maxlength="3000" placeholder="Examples: license number, insurance information, Google Business Profile link, years in business, referrals, or other verification details."></textarea>
+          </div>
+        </div>
+
+        <button class="button button-primary" id="application-submit" type="submit">Submit Free Application</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const SUPABASE_URL = "https://kipynrldiccmgvvjqnsx.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_99vTwhjadYoqJbg2YSLZqA_ib2rrItW";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const state = {
+      categories: [],
+      selectedCategory: null,
+      selectedCategoryId: null,
+      searchTerm: "",
+      session: null
+    };
+
+    const categoryGrid = document.querySelector("#category-grid");
+    const categorySearchForm = document.querySelector("#category-search-form");
+    const categorySearchInput = document.querySelector("#category-search-input");
+    const closeSearchPanelButton = document.querySelector("#close-search-panel");
+    const searchPanel = document.querySelector("#search-panel");
+    const searchPanelTitle = document.querySelector("#search-panel-title");
+    const searchPanelDescription = document.querySelector("#search-panel-description");
+    const resultsGrid = document.querySelector("#results-grid");
+    const resultsMessage = document.querySelector("#results-message");
+    const saveSearchButton = document.querySelector("#save-search-button");
     const otherServicesForm = document.querySelector("#other-services-form");
     const otherServicesSearch = document.querySelector("#other-services-search");
+    const accountButton = document.querySelector("#account-button");
+    const headerApplyButton = document.querySelector("#header-apply-button");
+    const heroApplyButton = document.querySelector("#hero-apply-button");
+    const businessApplyButton = document.querySelector("#business-apply-button");
+    const donateButton = document.querySelector("#donate-button");
+    const heroDonateButton = document.querySelector("#hero-donate-button");
+    const authModal = document.querySelector("#auth-modal");
+    const applicationModal = document.querySelector("#application-modal");
+    const signupForm = document.querySelector("#signup-form");
+    const signinForm = document.querySelector("#signin-form");
+    const applicationForm = document.querySelector("#application-form");
+    const applicationCategory = document.querySelector("#application-category");
+    const loggedOutAccount = document.querySelector("#logged-out-account");
+    const loggedInAccount = document.querySelector("#logged-in-account");
+    const accountEmail = document.querySelector("#account-email");
+    const savedSearchesList = document.querySelector("#saved-searches-list");
+    const signoutButton = document.querySelector("#signout-button");
     const year = document.querySelector("#year");
 
     year.textContent = new Date().getFullYear();
 
-    categoryButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const category = button.dataset.category;
-        alert(
-          category +
-          " was selected. Real results will be connected after the secure Supabase directory database is created."
-        );
-      });
-    });
+    function escapeHtml(value = "") {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
-    otherServicesForm.addEventListener("submit", (event) => {
-      event.preventDefault();
+    function safeExternalUrl(value) {
+      if (!value) return "";
+      try {
+        const url = new URL(value);
+        return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+      } catch {
+        return "";
+      }
+    }
 
-      const searchTerm = otherServicesSearch.value.trim();
+    function openModal(modal) {
+      modal.classList.add("visible");
+      document.body.classList.add("modal-open");
+    }
 
-      if (!searchTerm) {
-        alert("Please type the exact service you need before searching.");
-        otherServicesSearch.focus();
+    function closeModal(modal) {
+      modal.classList.remove("visible");
+      if (!document.querySelector(".modal.visible")) {
+        document.body.classList.remove("modal-open");
+      }
+    }
+
+    function showMessage(elementId, message, type = "success") {
+      const element = document.querySelector(`#${elementId}`);
+      element.textContent = message;
+      element.className = `form-message visible ${type}`;
+    }
+
+    function clearMessage(elementId) {
+      const element = document.querySelector(`#${elementId}`);
+      element.textContent = "";
+      element.className = "form-message";
+    }
+
+    function setButtonLoading(button, isLoading, loadingText) {
+      if (!button.dataset.originalText) {
+        button.dataset.originalText = button.textContent;
+      }
+
+      button.disabled = isLoading;
+      button.textContent = isLoading ? loadingText : button.dataset.originalText;
+    }
+
+    function updateAccountButton() {
+      if (state.session?.user) {
+        accountButton.textContent = "My Account";
+      } else {
+        accountButton.textContent = "Create Account";
+      }
+    }
+
+    function renderCategories() {
+      if (!state.categories.length) {
+        categoryGrid.innerHTML = `<div class="empty-state">No categories are available yet. Please refresh in a moment.</div>`;
         return;
       }
 
-      alert(
-        'You searched for "' +
-        searchTerm +
-        '". Real results will be connected after the secure Supabase directory database is created.'
+      categoryGrid.innerHTML = state.categories.map((category) => `
+        <button
+          class="category-button"
+          type="button"
+          data-category-id="${escapeHtml(category.id)}"
+          data-category-name="${escapeHtml(category.name)}"
+        >
+          <span class="category-icon">${escapeHtml(category.icon)}</span>
+          ${escapeHtml(category.name)}
+        </button>
+      `).join("");
+
+      document.querySelectorAll(".category-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const category = state.categories.find((item) => item.id === button.dataset.categoryId);
+          if (category) {
+            openCategorySearch(category);
+          }
+        });
+      });
+    }
+
+    function populateApplicationCategories() {
+      applicationCategory.innerHTML = `
+        <option value="">Choose the closest category (optional)</option>
+        ${state.categories.map((category) => `
+          <option value="${escapeHtml(category.name)}">${escapeHtml(category.name)}</option>
+        `).join("")}
+        <option value="All Other Services">All Other Services</option>
+      `;
+    }
+
+    async function loadCategories() {
+      const { data, error } = await supabase
+        .from("service_categories")
+        .select("id, name, slug, icon, sort_order")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+
+      if (error) {
+        console.error(error);
+        categoryGrid.innerHTML = `
+          <div class="empty-state">
+            We could not load service categories right now. Please refresh the page and try again.
+          </div>
+        `;
+        return;
+      }
+
+      state.categories = data || [];
+      renderCategories();
+      populateApplicationCategories();
+    }
+
+    function openCategorySearch(category) {
+      state.selectedCategory = category.name;
+      state.selectedCategoryId = category.id;
+      state.searchTerm = "";
+
+      searchPanelTitle.textContent = category.name;
+      searchPanelDescription.textContent = `Search approved businesses that offer ${category.name.toLowerCase()}.`;
+      categorySearchInput.value = "";
+      searchPanel.classList.add("visible");
+      searchPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      searchApprovedBusinesses();
+    }
+
+    function openOtherServicesSearch(searchTerm = "") {
+      state.selectedCategory = "All Other Services";
+      state.selectedCategoryId = null;
+      state.searchTerm = searchTerm.trim();
+
+      searchPanelTitle.textContent = "All Other Services";
+      searchPanelDescription.textContent = "Search approved businesses for the exact service you need.";
+      categorySearchInput.value = state.searchTerm;
+      searchPanel.classList.add("visible");
+      searchPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      searchApprovedBusinesses();
+    }
+
+    function renderResults(businesses, serviceRows) {
+      if (!businesses.length) {
+        resultsGrid.innerHTML = "";
+        resultsMessage.textContent = state.searchTerm
+          ? `No approved businesses matched "${state.searchTerm}" yet. Try a different phrase or check back later.`
+          : "No approved businesses are listed in this category yet. Check back soon.";
+        return;
+      }
+
+      const servicesByBusiness = {};
+
+      serviceRows.forEach((service) => {
+        if (!servicesByBusiness[service.business_id]) {
+          servicesByBusiness[service.business_id] = [];
+        }
+        servicesByBusiness[service.business_id].push(service.service_name);
+      });
+
+      resultsMessage.textContent = `${businesses.length} approved ${businesses.length === 1 ? "business" : "businesses"} found.`;
+
+      resultsGrid.innerHTML = businesses.map((business) => {
+        const services = servicesByBusiness[business.id] || [];
+        const websiteUrl = safeExternalUrl(business.website_url);
+        const socialUrl = safeExternalUrl(business.social_url);
+
+        return `
+          <article class="business-card">
+            <h4>${escapeHtml(business.business_name)}</h4>
+            ${business.description ? `<p>${escapeHtml(business.description)}</p>` : ""}
+            ${business.service_area ? `<p><strong>Service area:</strong> ${escapeHtml(business.service_area)}</p>` : ""}
+            ${services.length ? `
+              <div class="service-tags">
+                ${services.slice(0, 8).map((service) => `<span class="tag">${escapeHtml(service)}</span>`).join("")}
+              </div>
+            ` : ""}
+            <div class="business-links">
+              ${business.contact_phone ? `<a href="tel:${escapeHtml(business.contact_phone.replace(/[^0-9+]/g, ""))}">Call</a>` : ""}
+              ${business.contact_email ? `<a href="mailto:${escapeHtml(business.contact_email)}">Email</a>` : ""}
+              ${websiteUrl ? `<a href="${escapeHtml(websiteUrl)}" target="_blank" rel="noopener noreferrer">Website</a>` : ""}
+              ${socialUrl ? `<a href="${escapeHtml(socialUrl)}" target="_blank" rel="noopener noreferrer">Social</a>` : ""}
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function searchApprovedBusinesses() {
+      resultsMessage.textContent = "Searching approved businesses...";
+      resultsGrid.innerHTML = "";
+      saveSearchButton.disabled = true;
+
+      let categoryBusinessIds = null;
+
+      if (state.selectedCategoryId) {
+        const { data: categoryLinks, error: categoryError } = await supabase
+          .from("business_categories")
+          .select("business_id")
+          .eq("category_id", state.selectedCategoryId);
+
+        if (categoryError) {
+          console.error(categoryError);
+          resultsMessage.textContent = "We could not search this category right now. Please try again.";
+          return;
+        }
+
+        categoryBusinessIds = [...new Set((categoryLinks || []).map((item) => item.business_id))];
+
+        if (!categoryBusinessIds.length) {
+          renderResults([], []);
+          saveSearchButton.disabled = !state.session?.user;
+          return;
+        }
+      }
+
+      let servicesQuery = supabase
+        .from("business_services")
+        .select("business_id, service_name, service_description, category_id");
+
+      if (state.selectedCategoryId) {
+        servicesQuery = servicesQuery.eq("category_id", state.selectedCategoryId);
+      }
+
+      if (state.searchTerm) {
+        const cleanedTerm = state.searchTerm.replace(/[%_(),]/g, " ").trim();
+        servicesQuery = servicesQuery.or(
+          `service_name.ilike.%${cleanedTerm}%,service_description.ilike.%${cleanedTerm}%`
+        );
+      }
+
+      const { data: matchingServices, error: servicesError } = await servicesQuery;
+
+      if (servicesError) {
+        console.error(servicesError);
+        resultsMessage.textContent = "We could not search services right now. Please try again.";
+        return;
+      }
+
+      let serviceBusinessIds = [...new Set((matchingServices || []).map((item) => item.business_id))];
+
+      if (state.searchTerm && !serviceBusinessIds.length) {
+        renderResults([], []);
+        saveSearchButton.disabled = !state.session?.user;
+        return;
+      }
+
+      let finalBusinessIds;
+
+      if (categoryBusinessIds && state.searchTerm) {
+        finalBusinessIds = categoryBusinessIds.filter((id) => serviceBusinessIds.includes(id));
+      } else if (categoryBusinessIds) {
+        finalBusinessIds = categoryBusinessIds;
+      } else {
+        finalBusinessIds = serviceBusinessIds;
+      }
+
+      if (!finalBusinessIds.length) {
+        renderResults([], []);
+        saveSearchButton.disabled = !state.session?.user;
+        return;
+      }
+
+      const { data: businesses, error: businessesError } = await supabase
+        .from("businesses")
+        .select("id, business_name, description, contact_email, contact_phone, website_url, social_url, service_area")
+        .in("id", finalBusinessIds)
+        .eq("status", "approved")
+        .order("is_featured", { ascending: false })
+        .order("business_name", { ascending: true });
+
+      if (businessesError) {
+        console.error(businessesError);
+        resultsMessage.textContent = "We could not load matching businesses right now. Please try again.";
+        return;
+      }
+
+      const approvedBusinessIds = (businesses || []).map((business) => business.id);
+      const visibleServices = (matchingServices || []).filter((service) => approvedBusinessIds.includes(service.business_id));
+
+      renderResults(businesses || [], visibleServices);
+      saveSearchButton.disabled = !state.session?.user;
+    }
+
+    async function saveCurrentSearch() {
+      if (!state.session?.user) {
+        openModal(authModal);
+        showMessage("signup-message", "Create an account or sign in before saving a search.", "error");
+        return;
+      }
+
+      const categoryName = state.selectedCategory || "All Other Services";
+      const searchTerm = state.searchTerm || "";
+      const label = searchTerm ? `${categoryName}: ${searchTerm}` : categoryName;
+
+      setButtonLoading(saveSearchButton, true, "Saving...");
+
+      const { error } = await supabase
+        .from("saved_searches")
+        .insert({
+          user_id: state.session.user.id,
+          category_id: state.selectedCategoryId,
+          search_term: searchTerm,
+          label
+        });
+
+      setButtonLoading(saveSearchButton, false, "Save This Search");
+
+      if (error) {
+        console.error(error);
+        alert("We could not save that search. Please try again.");
+        return;
+      }
+
+      alert("Your search was saved to your free customer account.");
+    }
+
+    async function loadSavedSearches() {
+      if (!state.session?.user) {
+        savedSearchesList.innerHTML = "";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("saved_searches")
+        .select("id, label, search_term, category_id, created_at, service_categories(name)")
+        .eq("user_id", state.session.user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        savedSearchesList.innerHTML = `<div class="empty-state">We could not load your saved searches.</div>`;
+        return;
+      }
+
+      if (!data?.length) {
+        savedSearchesList.innerHTML = `
+          <div class="empty-state">
+            You have not saved any searches yet. Search for a service, then use “Save This Search.”
+          </div>
+        `;
+        return;
+      }
+
+      savedSearchesList.innerHTML = data.map((search) => {
+        const categoryName = search.service_categories?.name || "All Other Services";
+        const title = search.label || (search.search_term ? `${categoryName}: ${search.search_term}` : categoryName);
+
+        return `
+          <div class="account-summary">
+            <strong>${escapeHtml(title)}</strong>
+            <p>${escapeHtml(categoryName)}${search.search_term ? ` · ${escapeHtml(search.search_term)}` : ""}</p>
+            <div style="display:flex; gap:12px; margin-top:10px; flex-wrap:wrap;">
+              <button class="button-link" type="button" data-load-search="${escapeHtml(search.id)}">Open Search</button>
+              <button class="button-link" type="button" data-delete-search="${escapeHtml(search.id)}">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      document.querySelectorAll("[data-load-search]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const savedSearch = data.find((item) => item.id === button.dataset.loadSearch);
+          if (!savedSearch) return;
+
+          closeModal(authModal);
+
+          if (savedSearch.category_id) {
+            const category = state.categories.find((item) => item.id === savedSearch.category_id);
+            if (category) {
+              openCategorySearch(category);
+              categorySearchInput.value = savedSearch.search_term || "";
+              state.searchTerm = savedSearch.search_term || "";
+              searchApprovedBusinesses();
+              return;
+            }
+          }
+
+          openOtherServicesSearch(savedSearch.search_term || "");
+        });
+      });
+
+      document.querySelectorAll("[data-delete-search]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const confirmed = window.confirm("Delete this saved search?");
+          if (!confirmed) return;
+
+          const { error: deleteError } = await supabase
+            .from("saved_searches")
+            .delete()
+            .eq("id", button.dataset.deleteSearch);
+
+          if (deleteError) {
+            console.error(deleteError);
+            showMessage("account-message", "We could not delete that saved search. Please try again.", "error");
+            return;
+          }
+
+          loadSavedSearches();
+        });
+      });
+    }
+
+    function updateAccountView() {
+      const user = state.session?.user;
+
+      if (user) {
+        loggedOutAccount.hidden = true;
+        loggedInAccount.hidden = false;
+        accountEmail.textContent = user.email || "Signed-in customer";
+        loadSavedSearches();
+      } else {
+        loggedOutAccount.hidden = false;
+        loggedInAccount.hidden = true;
+        clearMessage("account-message");
+      }
+
+      updateAccountButton();
+      saveSearchButton.disabled = !user;
+    }
+
+    async function handleSignup(event) {
+      event.preventDefault();
+      clearMessage("signup-message");
+
+      const button = document.querySelector("#signup-submit");
+      const displayName = document.querySelector("#signup-name").value.trim();
+      const email = document.querySelector("#signup-email").value.trim();
+      const password = document.querySelector("#signup-password").value;
+
+      setButtonLoading(button, true, "Creating Account...");
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { display_name: displayName },
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      setButtonLoading(button, false, "Create Free Account");
+
+      if (error) {
+        console.error(error);
+        showMessage("signup-message", error.message, "error");
+        return;
+      }
+
+      signupForm.reset();
+
+      if (data.session) {
+        showMessage("signup-message", "Your account was created and you are signed in.", "success");
+      } else {
+        showMessage(
+          "signup-message",
+          "Account created. Check your email and click the confirmation link before signing in.",
+          "success"
+        );
+      }
+    }
+
+    async function handleSignin(event) {
+      event.preventDefault();
+      clearMessage("signin-message");
+
+      const button = document.querySelector("#signin-submit");
+      const email = document.querySelector("#signin-email").value.trim();
+      const password = document.querySelector("#signin-password").value;
+
+      setButtonLoading(button, true, "Signing In...");
+
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      setButtonLoading(button, false, "Sign In");
+
+      if (error) {
+        console.error(error);
+        showMessage("signin-message", error.message, "error");
+        return;
+      }
+
+      signinForm.reset();
+      closeModal(authModal);
+    }
+
+    async function handleApplication(event) {
+      event.preventDefault();
+      clearMessage("application-message");
+
+      const button = document.querySelector("#application-submit");
+      const formData = new FormData(applicationForm);
+
+      const payload = {
+        applicant_user_id: state.session?.user?.id || null,
+        business_name: formData.get("business_name").trim(),
+        contact_name: formData.get("contact_name").trim(),
+        contact_email: formData.get("contact_email").trim(),
+        contact_phone: formData.get("contact_phone").trim() || null,
+        website_url: formData.get("website_url").trim() || null,
+        social_url: formData.get("social_url").trim() || null,
+        service_area: formData.get("service_area").trim() || "Colorado Springs, Colorado",
+        category_notes: formData.get("category_notes") || null,
+        services_submitted: formData.get("services_submitted").trim(),
+        verification_notes: formData.get("verification_notes").trim() || null,
+        status: "pending"
+      };
+
+      setButtonLoading(button, true, "Submitting...");
+
+      const { error } = await supabase
+        .from("business_applications")
+        .insert(payload);
+
+      setButtonLoading(button, false, "Submit Free Application");
+
+      if (error) {
+        console.error(error);
+        showMessage(
+          "application-message",
+          "We could not submit the application. Please double-check the information and try again.",
+          "error"
+        );
+        return;
+      }
+
+      applicationForm.reset();
+      document.querySelector("#service-area").value = "Colorado Springs, Colorado";
+      showMessage(
+        "application-message",
+        "Thank you. Your free application was submitted and will stay private until it is reviewed.",
+        "success"
       );
-    });
+    }
+
+    function setupAuthTabs() {
+      document.querySelectorAll(".auth-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.dataset.authTab;
+
+          document.querySelectorAll(".auth-tab").forEach((item) => {
+            item.classList.toggle("active", item === tab);
+          });
+
+          document.querySelectorAll(".auth-view").forEach((view) => {
+            view.classList.toggle("active", view.id === `${target}-view`);
+          });
+        });
+      });
+    }
+
+    function setupModalEvents() {
+      document.querySelectorAll("[data-close-modal]").forEach((button) => {
+        button.addEventListener("click", () => {
+          closeModal(document.querySelector(`#${button.dataset.closeModal}`));
+        });
+      });
+
+      [authModal, applicationModal].forEach((modal) => {
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) closeModal(modal);
+        });
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          [authModal, applicationModal].forEach((modal) => {
+            if (modal.classList.contains("visible")) closeModal(modal);
+          });
+        }
+      });
+    }
+
+    function showDonationMessage() {
+      alert(
+        "The donation button will be connected to a secure Stripe donation page next. No donation link has been added yet."
+      );
+    }
+
+    function setupEvents() {
+      categorySearchForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        state.searchTerm = categorySearchInput.value.trim();
+        searchApprovedBusinesses();
+      });
+
+      closeSearchPanelButton.addEventListener("click", () => {
+        searchPanel.classList.remove("visible");
+      });
+
+      otherServicesForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const searchTerm = otherServicesSearch.value.trim();
+
+        if (!searchTerm) {
+          otherServicesSearch.focus();
+          return;
+        }
+
+        openOtherServicesSearch(searchTerm);
+      });
+
+      saveSearchButton.addEventListener("click", saveCurrentSearch);
+
+      accountButton.addEventListener("click", () => {
+        updateAccountView();
+        openModal(authModal);
+      });
+
+      [headerApplyButton, heroApplyButton, businessApplyButton].forEach((button) => {
+        button.addEventListener("click", () => {
+          clearMessage("application-message");
+          openModal(applicationModal);
+        });
+      });
+
+      [donateButton, heroDonateButton].forEach((button) => {
+        button.addEventListener("click", showDonationMessage);
+      });
+
+      signupForm.addEventListener("submit", handleSignup);
+      signinForm.addEventListener("submit", handleSignin);
+
+      signoutButton.addEventListener("click", async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          console.error(error);
+          showMessage("account-message", "We could not sign you out. Please try again.", "error");
+          return;
+        }
+
+        closeModal(authModal);
+      });
+
+      applicationForm.addEventListener("submit", handleApplication);
+    }
+
+    async function initialize() {
+      setupAuthTabs();
+      setupModalEvents();
+      setupEvents();
+
+      const { data } = await supabase.auth.getSession();
+      state.session = data.session;
+      updateAccountView();
+
+      supabase.auth.onAuthStateChange((_event, session) => {
+        state.session = session;
+        updateAccountView();
+      });
+
+      await loadCategories();
+    }
+
+    initialize();
   </script>
 </body>
 </html>
