@@ -121,6 +121,12 @@
       background: #ffe4e1;
     }
 
+    .button-small {
+      min-height: 38px;
+      padding: 8px 11px;
+      font-size: 0.86rem;
+    }
+
     .page {
       padding: 42px 0 70px;
     }
@@ -137,7 +143,7 @@
     }
 
     .page-heading p {
-      max-width: 760px;
+      max-width: 780px;
       margin: 0;
       color: var(--muted);
     }
@@ -217,34 +223,41 @@
       font-size: 0.83rem;
     }
 
-    .categories-box {
+    .service-list {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      gap: 11px;
+      margin-top: 10px;
+    }
+
+    .service-row {
+      display: grid;
+      grid-template-columns: minmax(200px, 0.8fr) minmax(230px, 1.5fr) auto;
       gap: 10px;
-      padding: 14px;
+      align-items: end;
+      padding: 12px;
       background: var(--soft);
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 11px;
     }
 
-    .category-option {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      color: var(--text);
-      font-size: 0.92rem;
-      font-weight: 700;
+    .service-row .form-group {
+      min-width: 0;
     }
 
-    .category-option input {
-      margin-top: 4px;
+    .service-row label {
+      font-size: 0.8rem;
+    }
+
+    .service-row .field,
+    .service-row select {
+      min-height: 42px;
     }
 
     .verified-row {
       display: flex;
       gap: 10px;
       align-items: center;
-      margin: 8px 0 20px;
+      margin: 18px 0 20px;
       padding: 13px;
       background: #effaf3;
       border: 1px solid #b8e6c9;
@@ -345,12 +358,17 @@
     }
 
     @media (max-width: 820px) {
-      .categories-box {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
       .listing-grid {
         grid-template-columns: 1fr;
+      }
+
+      .service-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .service-row .remove-service-button {
+        grid-column: 1 / -1;
+        justify-self: start;
       }
     }
 
@@ -366,8 +384,12 @@
       }
 
       .form-grid,
-      .categories-box {
+      .service-row {
         grid-template-columns: 1fr;
+      }
+
+      .service-row .remove-service-button {
+        grid-column: auto;
       }
 
       .status-card,
@@ -394,8 +416,8 @@
       <section class="page-heading">
         <h1>Directory Management</h1>
         <p>
-          Use this private page after you review a business’s Google Form application.
-          Add only businesses you have chosen to approve.
+          Review business applications in your Google Form/Sheet first. Then use this private page
+          to publish only businesses you approve. Assign each exact service to its correct category.
         </p>
       </section>
 
@@ -405,9 +427,7 @@
 
       <section id="denied-state" class="denied hidden">
         <h2>Administrator Access Required</h2>
-        <p>
-          Sign in on the public website using the administrator account, then return to this page.
-        </p>
+        <p>Sign in on the public website using the administrator account, then return to this page.</p>
         <p style="margin-top: 18px;">
           <a class="button" href="./index.html">Go to Public Website</a>
         </p>
@@ -422,8 +442,8 @@
         <section class="panel">
           <h2>Add an Approved Business</h2>
           <p class="panel-intro">
-            Copy details from a business’s Google Form application. A new listing created here
-            is approved and will be visible in public directory searches immediately.
+            Complete this only after you vet the business. Every service row gets its own category,
+            keeping customer search results accurate.
           </p>
 
           <div class="form-message" id="admin-message"></div>
@@ -471,23 +491,18 @@
               </div>
 
               <div class="form-group full">
-                <label>Directory categories</label>
-                <div id="categories-box" class="categories-box">
-                  Loading categories...
-                </div>
-                <p class="help">Select every category that truly fits this approved business. Do not select unrelated categories.</p>
-              </div>
-
-              <div class="form-group full">
-                <label for="business-services">Exact approved services</label>
-                <textarea id="business-services" maxlength="5000" required placeholder="Type one service per line. Example:
-Fence installation
-Wood fence repair
-Gate installation
-Gate repair"></textarea>
+                <label>Exact approved services</label>
                 <p class="help">
-                  Use one clear service per line. The public directory searches these individual services.
+                  Add one row for every service. Choose the category the service belongs under, then type the exact public service name.
                 </p>
+
+                <div id="service-list" class="service-list"></div>
+
+                <div style="margin-top: 12px;">
+                  <button class="button button-outline button-small" id="add-service-button" type="button">
+                    + Add Another Service
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -527,10 +542,11 @@ Gate repair"></textarea>
     const deniedState = document.querySelector("#denied-state");
     const adminContent = document.querySelector("#admin-content");
     const adminEmail = document.querySelector("#admin-email");
-    const categoriesBox = document.querySelector("#categories-box");
     const businessForm = document.querySelector("#business-form");
     const publishButton = document.querySelector("#publish-button");
     const listingsGrid = document.querySelector("#listings-grid");
+    const serviceList = document.querySelector("#service-list");
+    const addServiceButton = document.querySelector("#add-service-button");
 
     function escapeHtml(value = "") {
       return String(value)
@@ -558,6 +574,62 @@ Gate repair"></textarea>
       publishButton.textContent = isLoading
         ? "Publishing..."
         : "Publish Approved Business";
+    }
+
+    function categoryOptionsHtml() {
+      return `
+        <option value="">Choose category</option>
+        ${state.categories.map((category) => `
+          <option value="${escapeHtml(category.id)}">${escapeHtml(category.icon)} ${escapeHtml(category.name)}</option>
+        `).join("")}
+        <option value="all-other-services">Other Services</option>
+      `;
+    }
+
+    function createServiceRow() {
+      if (!state.categories.length) {
+        return;
+      }
+
+      const row = document.createElement("div");
+      row.className = "service-row";
+
+      row.innerHTML = `
+        <div class="form-group">
+          <label>Category</label>
+          <select class="service-category" required>
+            ${categoryOptionsHtml()}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Exact service</label>
+          <input class="field service-name" type="text" maxlength="240" placeholder="Example: Gate repair" required>
+        </div>
+
+        <button class="button button-danger button-small remove-service-button" type="button">
+          Remove
+        </button>
+      `;
+
+      row.querySelector(".remove-service-button").addEventListener("click", () => {
+        const rows = serviceList.querySelectorAll(".service-row");
+
+        if (rows.length === 1) {
+          row.querySelector(".service-category").value = "";
+          row.querySelector(".service-name").value = "";
+          return;
+        }
+
+        row.remove();
+      });
+
+      serviceList.appendChild(row);
+    }
+
+    function resetServiceRows() {
+      serviceList.innerHTML = "";
+      createServiceRow();
     }
 
     async function checkAdminAccess() {
@@ -599,18 +671,13 @@ Gate repair"></textarea>
 
       if (error) {
         console.error(error);
-        categoriesBox.innerHTML = "Could not load categories.";
-        return;
+        showMessage("Could not load service categories. Refresh the page and try again.", "error");
+        return false;
       }
 
       state.categories = data || [];
-
-      categoriesBox.innerHTML = state.categories.map((category) => `
-        <label class="category-option">
-          <input type="checkbox" name="category" value="${escapeHtml(category.id)}">
-          <span>${escapeHtml(category.icon)} ${escapeHtml(category.name)}</span>
-        </label>
-      `).join("");
+      resetServiceRows();
+      return true;
     }
 
     async function loadListings() {
@@ -666,7 +733,7 @@ Gate repair"></textarea>
             `).join("")}
           </div>
           <div class="listing-actions">
-            <button class="button button-danger" type="button" data-archive-id="${escapeHtml(business.id)}">
+            <button class="button button-danger button-small" type="button" data-archive-id="${escapeHtml(business.id)}">
               Archive Listing
             </button>
           </div>
@@ -698,28 +765,31 @@ Gate repair"></textarea>
       });
     }
 
+    function getServiceRows() {
+      return [...serviceList.querySelectorAll(".service-row")]
+        .map((row) => ({
+          category_id: row.querySelector(".service-category").value,
+          service_name: row.querySelector(".service-name").value.trim()
+        }))
+        .filter((service) => service.category_id || service.service_name);
+    }
+
     async function publishBusiness(event) {
       event.preventDefault();
       clearMessage();
 
-      const selectedCategoryIds = [...document.querySelectorAll('input[name="category"]:checked')]
-        .map((input) => input.value);
-
-      const rawServices = document.querySelector("#business-services").value;
-      const services = rawServices
-        .split("\n")
-        .map((service) => service.trim())
-        .filter(Boolean);
-
+      const services = getServiceRows();
       const isVerified = document.querySelector("#is-verified").checked;
 
-      if (!selectedCategoryIds.length) {
-        showMessage("Select at least one category for this business.", "error");
+      if (!services.length) {
+        showMessage("Add at least one exact service.", "error");
         return;
       }
 
-      if (!services.length) {
-        showMessage("Enter at least one exact service, one per line.", "error");
+      const incompleteService = services.find((service) => !service.category_id || !service.service_name);
+
+      if (incompleteService) {
+        showMessage("Every service row needs both a category and an exact service name.", "error");
         return;
       }
 
@@ -727,6 +797,12 @@ Gate repair"></textarea>
         showMessage("Check the approval box after you have reviewed this business.", "error");
         return;
       }
+
+      const selectedCategoryIds = [...new Set(
+        services
+          .filter((service) => service.category_id !== "all-other-services")
+          .map((service) => service.category_id)
+      )];
 
       setButtonLoading(true);
 
@@ -758,28 +834,29 @@ Gate repair"></textarea>
         return;
       }
 
-      const categoryRows = selectedCategoryIds.map((categoryId) => ({
-        business_id: business.id,
-        category_id: categoryId
-      }));
+      if (selectedCategoryIds.length) {
+        const categoryRows = selectedCategoryIds.map((categoryId) => ({
+          business_id: business.id,
+          category_id: categoryId
+        }));
 
-      const { error: categoryError } = await supabase
-        .from("business_categories")
-        .insert(categoryRows);
+        const { error: categoryError } = await supabase
+          .from("business_categories")
+          .insert(categoryRows);
 
-      if (categoryError) {
-        console.error(categoryError);
-        await supabase.from("businesses").delete().eq("id", business.id);
-        setButtonLoading(false);
-        showMessage("We could not save the listing categories. Nothing was published. Please try again.", "error");
-        return;
+        if (categoryError) {
+          console.error(categoryError);
+          await supabase.from("businesses").delete().eq("id", business.id);
+          setButtonLoading(false);
+          showMessage("We could not save the listing categories. Nothing was published. Please try again.", "error");
+          return;
+        }
       }
 
-      const defaultCategoryId = selectedCategoryIds[0];
-      const serviceRows = services.map((serviceName) => ({
+      const serviceRows = services.map((service) => ({
         business_id: business.id,
-        category_id: defaultCategoryId,
-        service_name: serviceName
+        category_id: service.category_id === "all-other-services" ? null : service.category_id,
+        service_name: service.service_name
       }));
 
       const { error: serviceError } = await supabase
@@ -796,8 +873,13 @@ Gate repair"></textarea>
 
       businessForm.reset();
       document.querySelector("#service-area").value = "Colorado Springs, Colorado";
+      resetServiceRows();
+
       setButtonLoading(false);
-      showMessage("Approved business published successfully. It is now visible in public directory searches.", "success");
+      showMessage(
+        "Approved business published successfully. It is now visible in the relevant public directory searches.",
+        "success"
+      );
       loadListings();
     }
 
@@ -805,9 +887,13 @@ Gate repair"></textarea>
       const isAdmin = await checkAdminAccess();
       if (!isAdmin) return;
 
-      await loadCategories();
-      await loadListings();
+      const categoriesLoaded = await loadCategories();
+      if (!categoriesLoaded) return;
+
+      addServiceButton.addEventListener("click", createServiceRow);
       businessForm.addEventListener("submit", publishBusiness);
+
+      await loadListings();
     }
 
     initialize();
