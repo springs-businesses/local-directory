@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listing Policy | Springs Local Small Businesses</title>
+
+  <style>
+    :root {
+      --navy: #102a43;
+      --navy-dark: #071c2e;
+      --blue: #1769aa;
+      --soft: #f6f9fc;
+      --line: #d9e2ec;
+      --text: #1d2939;
+      --muted: #667085;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--soft);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: var(--blue); }
+
+    .container {
+      width: min(850px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header {
+      padding: 18px 0;
+      color: var(--white);
+      background: var(--navy-dark);
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 14px;
+      color: var(--navy);
+      background: var(--white);
+      border-radius: 9px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    main { padding: 48px 0 64px; }
+
+    article {
+      padding: 32px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    h1, h2 { color: var(--navy); }
+    h1 { margin-top: 0; }
+    h2 { margin-top: 30px; font-size: 1.3rem; }
+    .updated { color: var(--muted); }
+
+    footer {
+      padding: 28px 0;
+      color: #c7d7e4;
+      background: var(--navy-dark);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 560px) {
+      article { padding: 22px; }
+      .header-row { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container header-row">
+      <a class="brand" href="./index.html">Springs Local Small Businesses</a>
+      <a class="button" href="./index.html">Return to Directory</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <article>
+        <h1>Directory Listing Policy</h1>
+        <p class="updated">Last updated: October 1, 2026</p>
+
+        <p>
+          Springs Local Small Businesses aims to provide useful, accurate local-business listings.
+          Business applications are reviewed before publication, but listing approval is not a
+          guarantee of service quality or a certification by a government agency.
+        </p>
+
+        <h2>Free applications and listings</h2>
+        <p>
+          Businesses may apply to be listed at no charge. Submission of an application does not
+          guarantee approval, placement, ranking, or continued display in the directory.
+        </p>
+
+        <h2>Review process</h2>
+        <p>
+          We review submitted information for completeness, relevance, and apparent accuracy. We may
+          contact an applicant, request additional information, clarify a service description, or
+          decline an application at our discretion.
+        </p>
+
+        <h2>Accurate information</h2>
+        <p>
+          Businesses are responsible for ensuring that submitted information is accurate, current,
+          and lawful. This includes contact details, service descriptions, service area, website
+          links, credential claims, and any statements about licensing, insurance, bonding, or experience.
+        </p>
+
+        <h2>Service categories</h2>
+        <p>
+          Listings are assigned to categories based on the exact services a business provides.
+          We may edit service wording or category placement to improve search accuracy. A business
+          should not appear in a category for services it does not actually offer.
+        </p>
+
+        <h2>Credentials and claims</h2>
+        <p>
+          Businesses must not claim to be licensed, insured, bonded, certified, or otherwise
+          credentialed unless the claim is true and can be supported. Customers should independently
+          verify credentials relevant to their project before hiring a business.
+        </p>
+
+        <h2>Changes and removal</h2>
+        <p>
+          A business may request a correction or removal of its listing by contacting us. We may
+          update, suspend, archive, or remove any listing that is inaccurate, outdated, misleading,
+          inactive, unlawful, receives credible complaints, or does not follow this policy.
+        </p>
+
+        <h2>Report a concern</h2>
+        <p>
+          To report an inaccurate listing, impersonation, or other concern, email
+          <a href="mailto:springsbusinesses@gmail.com">springsbusinesses@gmail.com</a>.
+          Include the business name, a description of the concern, and any helpful supporting information.
+        </p>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      © <span id="year"></span> Springs Local Small Businesses
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector("#year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
