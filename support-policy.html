@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Contribution Policy | Springs Local Small Businesses</title>
+
+  <style>
+    :root {
+      --navy: #102a43;
+      --navy-dark: #071c2e;
+      --blue: #1769aa;
+      --soft: #f6f9fc;
+      --line: #d9e2ec;
+      --text: #1d2939;
+      --muted: #667085;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--soft);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: var(--blue); }
+
+    .container {
+      width: min(850px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header {
+      padding: 18px 0;
+      color: var(--white);
+      background: var(--navy-dark);
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 14px;
+      color: var(--navy);
+      background: var(--white);
+      border-radius: 9px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    main { padding: 48px 0 64px; }
+
+    article {
+      padding: 32px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    h1, h2 { color: var(--navy); }
+    h1 { margin-top: 0; }
+    h2 { margin-top: 30px; font-size: 1.3rem; }
+    .updated { color: var(--muted); }
+
+    footer {
+      padding: 28px 0;
+      color: #c7d7e4;
+      background: var(--navy-dark);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 560px) {
+      article { padding: 22px; }
+      .header-row { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container header-row">
+      <a class="brand" href="./index.html">Springs Local Small Businesses</a>
+      <a class="button" href="./index.html">Return to Directory</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <article>
+        <h1>Support Contribution Policy</h1>
+        <p class="updated">Last updated: October 1, 2026</p>
+
+        <p>
+          Springs Local Small Businesses is free for customers and local businesses to use. The
+          website offers optional support contributions to help cover basic hosting, maintenance, and
+          future directory improvements.
+        </p>
+
+        <h2>Optional contributions</h2>
+        <p>
+          Support contributions are voluntary. A contribution is not required to search the directory,
+          create an account, apply for a listing, or use the directory’s free features.
+        </p>
+
+        <h2>Not tax-deductible</h2>
+        <p>
+          Contributions are not charitable donations and are not tax-deductible.
+        </p>
+
+        <h2>Payment processing</h2>
+        <p>
+          Contributions are processed securely by Stripe. Springs Local Small Businesses does not
+          store full payment-card information on this website.
+        </p>
+
+        <h2>Refund requests</h2>
+        <p>
+          If you made a contribution by mistake or have a payment concern, contact us within 30 days
+          of the payment. Include the name used for payment, the approximate date, the amount, and
+          the email address associated with the transaction. Refund requests are reviewed individually.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          For support-contribution or refund questions, email
+          <a href="mailto:springsbusinesses@gmail.com">springsbusinesses@gmail.com</a>.
+        </p>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      © <span id="year"></span> Springs Local Small Businesses
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector("#year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
