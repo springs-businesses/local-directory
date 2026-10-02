@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Privacy Policy | Springs Local Small Businesses</title>
+
+  <style>
+    :root {
+      --navy: #102a43;
+      --navy-dark: #071c2e;
+      --blue: #1769aa;
+      --soft: #f6f9fc;
+      --line: #d9e2ec;
+      --text: #1d2939;
+      --muted: #667085;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--soft);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--blue);
+    }
+
+    .container {
+      width: min(850px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header {
+      padding: 18px 0;
+      color: var(--white);
+      background: var(--navy-dark);
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 14px;
+      color: var(--navy);
+      background: var(--white);
+      border-radius: 9px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    main {
+      padding: 48px 0 64px;
+    }
+
+    article {
+      padding: 32px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    h1,
+    h2 {
+      color: var(--navy);
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    h2 {
+      margin-top: 30px;
+      font-size: 1.3rem;
+    }
+
+    .updated {
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 28px 0;
+      color: #c7d7e4;
+      background: var(--navy-dark);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 560px) {
+      article {
+        padding: 22px;
+      }
+
+      .header-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container header-row">
+      <a class="brand" href="./index.html">Springs Local Small Businesses</a>
+      <a class="button" href="./index.html">Return to Directory</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <article>
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: October 1, 2026</p>
+
+        <p>
+          Springs Local Small Businesses is a Colorado Springs directory intended to help customers
+          find local small businesses and help local businesses apply to be listed. This Privacy Policy
+          explains the information we collect, how we use it, and how to contact us with questions.
+        </p>
+
+        <h2>Information we collect</h2>
+        <p>We may collect information you voluntarily provide when you use the directory, including:</p>
+        <ul>
+          <li>Your name, email address, and account information when you create a customer account.</li>
+          <li>Saved search information connected to your customer account.</li>
+          <li>Business application information, including business name, contact name, email, phone number, website, service area, services offered, and verification details.</li>
+          <li>Messages or information you send when contacting the directory.</li>
+        </ul>
+
+        <h2>How we use information</h2>
+        <p>We use submitted information to:</p>
+        <ul>
+          <li>Provide, operate, and improve the directory.</li>
+          <li>Create and manage customer accounts and saved searches.</li>
+          <li>Review business applications and publish approved business listings.</li>
+          <li>Respond to questions, correction requests, complaints, and support requests.</li>
+          <li>Protect the directory from spam, fraud, misuse, or security issues.</li>
+        </ul>
+
+        <h2>Public business listings</h2>
+        <p>
+          If a business application is approved, information selected for the public listing may be
+          visible to anyone using the directory. This can include the business name, service area,
+          services, business description, website, social-media link, business email, and business phone number.
+        </p>
+
+        <h2>Payment processing</h2>
+        <p>
+          Optional support contributions are processed by Stripe. We do not receive or store full
+          payment-card numbers on this website. Stripe processes payment information under its own
+          privacy policies and terms.
+        </p>
+
+        <h2>Service providers</h2>
+        <p>
+          We use third-party services to operate the website, including website hosting, database and
+          account services, forms, and payment processing. These providers may process information as
+          needed to provide their services.
+        </p>
+
+        <h2>Data security and retention</h2>
+        <p>
+          We use reasonable measures intended to protect information submitted through the directory.
+          No online system can guarantee absolute security. We retain information for as long as
+          reasonably necessary to operate the directory, meet legal obligations, resolve disputes, and
+          enforce our policies.
+        </p>
+
+        <h2>Your choices</h2>
+        <p>
+          You may request to update or remove a public business listing, ask questions about your
+          information, or request account-related assistance by contacting us. We may need to verify
+          your identity before completing a request.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          For privacy questions or requests, email:
+          <a href="mailto:springsbusinesses@gmail.com">springsbusinesses@gmail.com</a>
+        </p>
+
+        <h2>Changes to this policy</h2>
+        <p>
+          We may update this Privacy Policy as the directory changes. The “Last updated” date at the
+          top of this page shows when it was most recently revised.
+        </p>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      © <span id="year"></span> Springs Local Small Businesses
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector("#year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
