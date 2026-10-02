@@ -1076,7 +1076,7 @@
     </div>
   </div>
 
-  <div class="modal" id="application-modal" role="dialog" aria-modal="true" aria-labelledby="application-modal-title">
+  <div class="modal" id="application-modal" role="dialog" aria-modal="true" aria-labelledby="application-modal-title" hidden>
     <div class="modal-content">
       <div class="modal-header">
         <div>
@@ -1158,6 +1158,7 @@ Weed removal"></textarea>
 
     const SUPABASE_URL = "https://kipynrldiccmgvvjqnsx.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_99vTwhjadYoqJbg2YSLZqA_ib2rrItW";
+    const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScJj0jqsRbQE5eBywV83DJxcu3-nkm-az2_sPvZ_FvjxRuhsg/viewform?usp=publish-editor";
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
     const state = {
@@ -1816,12 +1817,11 @@ Weed removal"></textarea>
         openModal(authModal);
       });
 
-      [headerApplyButton, heroApplyButton, businessApplyButton].forEach((button) => {
-        button.addEventListener("click", () => {
-          clearMessage("application-message");
-          openModal(applicationModal);
-        });
-      });
+     [headerApplyButton, heroApplyButton, businessApplyButton].forEach((button) => {
+  button.addEventListener("click", () => {
+    window.open(GOOGLE_FORM_URL, "_blank", "noopener,noreferrer");
+  });
+});
 
       [donateButton, heroDonateButton].forEach((button) => {
         button.addEventListener("click", showDonationMessage);
