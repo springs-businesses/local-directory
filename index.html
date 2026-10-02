@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Springs Local Small Businesses helps Colorado Springs residents find vetted local small businesses by service."
+  />
+  <title>Springs Local Small Businesses | Find Trusted Local Help</title>
+
+  <style>
+    :root {
+      --navy: #102a43;
+      --navy-dark: #071c2e;
+      --blue: #1769aa;
+      --blue-light: #eaf5ff;
+      --gold: #f4b942;
+      --gold-dark: #d89213;
+      --green: #167a4b;
+      --green-dark: #0d5935;
+      --ink: #1d2939;
+      --muted: #667085;
+      --line: #d9e2ec;
+      --surface: #ffffff;
+      --surface-soft: #f7fafc;
+      --shadow: 0 12px 30px rgba(16, 42, 67, 0.12);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--surface-soft);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-row {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: var(--surface);
+      background: var(--blue);
+      border-radius: 12px;
+      font-size: 1.35rem;
+      box-shadow: 0 6px 14px rgba(23, 105, 170, 0.22);
+    }
+
+    .brand-text {
+      display: grid;
+      line-height: 1.05;
+    }
+
+    .brand-text small {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .button {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-weight: 800;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button-outline {
+      color: var(--navy);
+      background: var(--surface);
+      border-color: var(--line);
+    }
+
+    .button-primary {
+      color: var(--surface);
+      background: var(--blue);
+    }
+
+    .button-primary:hover {
+      background: #0f578d;
+    }
+
+    .button-donate {
+      color: #5b3a00;
+      background: var(--gold);
+    }
+
+    .button-donate:hover {
+      background: var(--gold-dark);
+    }
+
+    .hero {
+      padding: 76px 0 64px;
+      color: var(--surface);
+      background:
+        radial-gradient(circle at 85% 15%, rgba(244, 185, 66, 0.27), transparent 27%),
+        radial-gradient(circle at 12% 85%, rgba(79, 161, 223, 0.24), transparent 30%),
+        linear-gradient(135deg, var(--navy-dark), var(--navy));
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 1.18fr 0.82fr;
+      gap: 44px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 10px;
+      color: #fff3d6;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin-bottom: 18px;
+      font-size: clamp(2.2rem, 5vw, 4.25rem);
+      line-height: 1.04;
+      letter-spacing: -0.045em;
+    }
+
+    .hero-copy {
+      max-width: 660px;
+      margin-bottom: 26px;
+      color: #dce9f2;
+      font-size: 1.08rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-card {
+      padding: 28px;
+      color: var(--ink);
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card h2 {
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: 1.4rem;
+    }
+
+    .hero-card p {
+      color: var(--muted);
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .mini-list div {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .check {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--green);
+      background: #e4f6eb;
+      border-radius: 50%;
+      font-size: 0.85rem;
+    }
+
+    .section {
+      padding: 72px 0;
+    }
+
+    .section-heading {
+      max-width: 730px;
+      margin: 0 auto 34px;
+      text-align: center;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 10px;
+      color: var(--navy);
+      font-size: clamp(1.8rem, 3vw, 2.55rem);
+      letter-spacing: -0.03em;
+    }
+
+    .section-heading p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .category-button {
+      min-height: 116px;
+      padding: 20px;
+      text-align: left;
+      color: var(--navy);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(16, 42, 67, 0.04);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .category-button:hover {
+      transform: translateY(-3px);
+      border-color: #9fc5e5;
+      box-shadow: 0 10px 20px rgba(16, 42, 67, 0.1);
+    }
+
+    .category-icon {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1.6rem;
+    }
+
+    .category-title {
+      display: block;
+      font-size: 1.02rem;
+      font-weight: 800;
+    }
+
+    .other-services {
+      padding: 32px;
+      margin-top: 26px;
+      color: var(--surface);
+      background: var(--navy);
+      border-radius: var(--radius);
+    }
+
+    .other-services h3 {
+      margin-bottom: 8px;
+      font-size: 1.5rem;
+    }
+
+    .other-services p {
+      margin-bottom: 20px;
+      color: #d9e8f3;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-row input {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 14px;
+      color: var(--ink);
+      background: var(--surface);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    .search-row input:focus {
+      border-color: var(--gold);
+    }
+
+    .search-row .button {
+      min-width: 110px;
+    }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .how-card {
+      padding: 26px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .number {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 15px;
+      color: var(--surface);
+      background: var(--blue);
+      border-radius: 50%;
+      font-weight: 900;
+    }
+
+    .how-card h3 {
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: 1.14rem;
+    }
+
+    .how-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .business-banner {
+      padding: 40px;
+      color: var(--surface);
+      background: var(--green);
+      border-radius: var(--radius);
+    }
+
+    .business-banner-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .business-banner h2 {
+      margin-bottom: 8px;
+      font-size: clamp(1.7rem, 3vw, 2.25rem);
+    }
+
+    .business-banner p {
+      max-width: 690px;
+      margin-bottom: 0;
+      color: #daf2e4;
+    }
+
+    .button-light {
+      flex: 0 0 auto;
+      color: var(--green-dark);
+      background: var(--surface);
+    }
+
+    .button-light:hover {
+      background: #effaf3;
+    }
+
+    .footer {
+      padding: 34px 0;
+      color: #c7d7e4;
+      background: var(--navy-dark);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .footer p {
+      margin: 0;
+      font-size: 0.92rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .footer-links a:hover {
+      color: var(--gold);
+    }
+
+    @media (max-width: 820px) {
+      .header-row,
+      .business-banner-inner,
+      .footer-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-row {
+        padding: 14px 0;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .hero {
+        padding: 56px 0;
+      }
+
+      .hero-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .category-grid,
+      .how-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .business-banner {
+        padding: 30px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .container {
+        width: min(100% - 24px, 1120px);
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .header-actions .button {
+        flex: 1 1 auto;
+        padding: 9px 12px;
+        font-size: 0.9rem;
+      }
+
+      .hero-buttons .button {
+        width: 100%;
+      }
+
+      .category-grid,
+      .how-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-row {
+        flex-direction: column;
+      }
+
+      .search-row .button {
+        width: 100%;
+      }
+
+      .other-services,
+      .business-banner {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="#top" aria-label="Springs Local Small Businesses home">
+        <span class="brand-mark">SL</span>
+        <span class="brand-text">
+          Springs Local
+          <small>Small Businesses</small>
+        </span>
+      </a>
+
+      <nav class="header-actions" aria-label="Main navigation">
+        <a class="button button-outline" href="#find-services">Find Services</a>
+        <a class="button button-outline" href="#businesses">For Businesses</a>
+        <a class="button button-primary" href="#customer-account">Create Account</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-layout">
+        <div>
+          <span class="eyebrow">Colorado Springs, Colorado</span>
+          <h1>Find the right local small business for the job.</h1>
+          <p class="hero-copy">
+            Springs Local Small Businesses is a free directory designed to help Colorado Springs
+            residents find local businesses by the exact service they need.
+          </p>
+
+          <div class="hero-buttons">
+            <a class="button button-donate" href="#donate">Donate to Keep This Free</a>
+            <a class="button button-outline" href="#businesses">Apply to Be Listed</a>
+          </div>
+        </div>
+
+        <aside class="hero-card" aria-label="Directory promise">
+          <h2>Built for useful local results</h2>
+          <p>
+            Businesses apply first. Listings are reviewed before they can appear in the directory.
+          </p>
+
+          <div class="mini-list">
+            <div><span class="check">✓</span> Search by service, not endless lists</div>
+            <div><span class="check">✓</span> Save searches with a free customer account</div>
+            <div><span class="check">✓</span> Support local small businesses</div>
+          </div>
+
+          <a class="button button-primary" href="#find-services">Find a Service</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="find-services">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Find a Local Service</h2>
+          <p>
+            Choose a category, then tell us what job you need. You will only see approved businesses
+            that offer matching services.
+          </p>
+        </div>
+
+        <div class="category-grid" aria-label="Service categories">
+          <button class="category-button" type="button" data-category="Handyman Services">
+            <span class="category-icon">🛠️</span>
+            <span class="category-title">Handyman Services</span>
+          </button>
+
+          <button class="category-button" type="button" data-category="Cleaning Services">
+            <span class="category-icon">🧽</span>
+            <span class="category-title">Cleaning Services</
