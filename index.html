@@ -853,7 +853,7 @@
           </p>
 
           <div class="hero-actions">
-            <button class="button button-donate" id="hero-donate-button" type="button">Donate to Keep This Free</button>
+            <button class="button button-donate" id="hero-donate-button" type="button">Support the Directory</button>
             <button class="button button-outline" id="hero-apply-button" type="button">Apply to Be Listed</button>
           </div>
         </div>
@@ -992,10 +992,11 @@
         <div class="donate-card">
           <h2>Help Keep This Directory Free</h2>
           <p>
-            Donations will help with basic hosting, maintenance, and future improvements while
-            keeping the directory free for customers and local small businesses.
+            Optional contributions help cover basic hosting, maintenance, and future improvements
+            while keeping the directory free for customers and local small businesses. Contributions
+            are not tax-deductible.
           </p>
-          <button class="button button-donate" id="donate-button" type="button">Donate to Keep This Free</button>
+          <button class="button button-donate" id="donate-button" type="button">Support the Directory</button>
         </div>
       </div>
     </section>
@@ -1782,12 +1783,8 @@ Weed removal"></textarea>
     }
 
     function showDonationMessage() {
-  window.open(
-    "https://buy.stripe.com/00w4gzcLB5Wg30zeKx28801",
-    "_blank",
-    "noopener,noreferrer"
-  );
-}
+      window.location.href = "https://buy.stripe.com/00w4gzcLB5Wg30zeKx28801";
+    }
 
     function setupEvents() {
       categorySearchForm.addEventListener("submit", (event) => {
