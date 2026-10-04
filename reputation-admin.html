@@ -1138,12 +1138,15 @@
         .from("business_reputation_profiles")
         .upsert(profilePayload, { onConflict: "business_id" });
 
-      if (profileError) {
-        console.error(profileError);
-        setSaveLoading(false);
-        showMessage("We could not save the reputation profile. Please try again.", "error");
-        return;
-      }
+if (profileError) {
+  console.error(profileError);
+  setSaveLoading(false);
+  showMessage(
+    `Could not save reputation profile: ${profileError.message}`,
+    "error"
+  );
+  return;
+}
 
       const { error: deleteError } = await supabase
         .from("business_reputation_sources")
