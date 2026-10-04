@@ -22,6 +22,8 @@
       --danger-soft: #fff1f0;
       --success: #087443;
       --success-soft: #e9f8ef;
+      --warning: #9a6700;
+      --warning-soft: #fff8db;
     }
 
     * {
@@ -111,6 +113,16 @@
       background: #eef5fa;
     }
 
+    .button-warning {
+      color: var(--warning);
+      background: var(--warning-soft);
+      border-color: #f2d17a;
+    }
+
+    .button-warning:hover {
+      background: #ffefb8;
+    }
+
     .button-danger {
       color: var(--danger);
       background: var(--danger-soft);
@@ -168,6 +180,24 @@
     .panel-intro {
       margin: 0;
       color: var(--muted);
+    }
+
+    .edit-notice {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px;
+      margin: 18px 0 0;
+      color: var(--warning);
+      background: var(--warning-soft);
+      border: 1px solid #f2d17a;
+      border-radius: 10px;
+      font-weight: 800;
+    }
+
+    .edit-notice.visible {
+      display: flex;
     }
 
     .form-grid {
@@ -396,6 +426,11 @@
       .panel {
         padding: 20px;
       }
+
+      .edit-notice {
+        align-items: flex-start;
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -416,8 +451,8 @@
       <section class="page-heading">
         <h1>Directory Management</h1>
         <p>
-          Review business applications in your Google Form/Sheet first. Then use this private page
-          to publish only businesses you approve. Assign each exact service to its correct category.
+          Review business applications first. Then publish approved businesses, edit their public
+          information, or archive listings that should no longer be visible.
         </p>
       </section>
 
@@ -440,11 +475,18 @@
         </section>
 
         <section class="panel">
-          <h2>Add an Approved Business</h2>
-          <p class="panel-intro">
+          <h2 id="form-heading">Add an Approved Business</h2>
+          <p class="panel-intro" id="form-intro">
             Complete this only after you vet the business. Every service row gets its own category,
             keeping customer search results accurate.
           </p>
+
+          <div class="edit-notice" id="edit-notice">
+            <span id="edit-notice-text">You are editing an approved listing.</span>
+            <button class="button button-outline button-small" id="cancel-edit-button" type="button">
+              Cancel Editing
+            </button>
+          </div>
 
           <div class="form-message" id="admin-message"></div>
 
@@ -535,7 +577,8 @@
 
     const state = {
       user: null,
-      categories: []
+      categories: [],
+      editingBusinessId: null
     };
 
     const loadingState = document.querySelector("#loading-state");
@@ -547,6 +590,11 @@
     const listingsGrid = document.querySelector("#listings-grid");
     const serviceList = document.querySelector("#service-list");
     const addServiceButton = document.querySelector("#add-service-button");
+    const formHeading = document.querySelector("#form-heading");
+    const formIntro = document.querySelector("#form-intro");
+    const editNotice = document.querySelector("#edit-notice");
+    const editNoticeText = document.querySelector("#edit-notice-text");
+    const cancelEditButton = document.querySelector("#cancel-edit-button");
 
     function escapeHtml(value = "") {
       return String(value)
@@ -571,25 +619,44 @@
 
     function setButtonLoading(isLoading) {
       publishButton.disabled = isLoading;
-      publishButton.textContent = isLoading
-        ? "Publishing..."
+
+      if (isLoading) {
+        publishButton.textContent = state.editingBusinessId
+          ? "Saving Changes..."
+          : "Publishing...";
+        return;
+      }
+
+      publishButton.textContent = state.editingBusinessId
+        ? "Save Listing Changes"
         : "Publish Approved Business";
     }
 
-    function categoryOptionsHtml() {
+    function categoryOptionsHtml(selectedCategoryId = "") {
       return `
         <option value="">Choose category</option>
         ${state.categories.map((category) => `
-          <option value="${escapeHtml(category.id)}">${escapeHtml(category.icon)} ${escapeHtml(category.name)}</option>
+          <option
+            value="${escapeHtml(category.id)}"
+            ${category.id === selectedCategoryId ? "selected" : ""}
+          >
+            ${escapeHtml(category.icon)} ${escapeHtml(category.name)}
+          </option>
         `).join("")}
-        <option value="all-other-services">Other Services</option>
+        <option
+          value="all-other-services"
+          ${selectedCategoryId === "all-other-services" ? "selected" : ""}
+        >
+          Other Services
+        </option>
       `;
     }
 
-    function createServiceRow() {
-      if (!state.categories.length) {
-        return;
-      }
+    function createServiceRow(service = {}) {
+      if (!state.categories.length) return;
+
+      const categoryId = service.category_id || "";
+      const serviceName = service.service_name || "";
 
       const row = document.createElement("div");
       row.className = "service-row";
@@ -598,13 +665,20 @@
         <div class="form-group">
           <label>Category</label>
           <select class="service-category" required>
-            ${categoryOptionsHtml()}
+            ${categoryOptionsHtml(categoryId)}
           </select>
         </div>
 
         <div class="form-group">
           <label>Exact service</label>
-          <input class="field service-name" type="text" maxlength="240" placeholder="Example: Gate repair" required>
+          <input
+            class="field service-name"
+            type="text"
+            maxlength="240"
+            placeholder="Example: Gate repair"
+            value="${escapeHtml(serviceName)}"
+            required
+          >
         </div>
 
         <button class="button button-danger button-small remove-service-button" type="button">
@@ -630,6 +704,21 @@
     function resetServiceRows() {
       serviceList.innerHTML = "";
       createServiceRow();
+    }
+
+    function resetFormToCreateMode() {
+      state.editingBusinessId = null;
+      businessForm.reset();
+      document.querySelector("#service-area").value = "Colorado Springs, Colorado";
+      document.querySelector("#is-verified").checked = false;
+      resetServiceRows();
+
+      formHeading.textContent = "Add an Approved Business";
+      formIntro.textContent =
+        "Complete this only after you vet the business. Every service row gets its own category, keeping customer search results accurate.";
+      editNotice.classList.remove("visible");
+      publishButton.textContent = "Publish Approved Business";
+      clearMessage();
     }
 
     async function checkAdminAccess() {
@@ -706,7 +795,7 @@
 
       const { data: services, error: servicesError } = await supabase
         .from("business_services")
-        .select("business_id, service_name")
+        .select("business_id, category_id, service_name")
         .in("business_id", businessIds)
         .order("service_name", { ascending: true });
 
@@ -719,7 +808,8 @@
         if (!servicesByBusiness[service.business_id]) {
           servicesByBusiness[service.business_id] = [];
         }
-        servicesByBusiness[service.business_id].push(service.service_name);
+
+        servicesByBusiness[service.business_id].push(service);
       });
 
       listingsGrid.innerHTML = businesses.map((business) => `
@@ -729,16 +819,39 @@
           ${business.description ? `<p>${escapeHtml(business.description)}</p>` : ""}
           <div class="tag-list">
             ${(servicesByBusiness[business.id] || []).slice(0, 10).map((service) => `
-              <span class="tag">${escapeHtml(service)}</span>
+              <span class="tag">${escapeHtml(service.service_name)}</span>
             `).join("")}
           </div>
           <div class="listing-actions">
-            <button class="button button-danger button-small" type="button" data-archive-id="${escapeHtml(business.id)}">
+            <button
+              class="button button-warning button-small"
+              type="button"
+              data-edit-id="${escapeHtml(business.id)}"
+            >
+              Edit Listing
+            </button>
+
+            <button
+              class="button button-danger button-small"
+              type="button"
+              data-archive-id="${escapeHtml(business.id)}"
+            >
               Archive Listing
             </button>
           </div>
         </article>
       `).join("");
+
+      document.querySelectorAll("[data-edit-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const business = businesses.find((item) => item.id === button.dataset.editId);
+          const businessServices = servicesByBusiness[button.dataset.editId] || [];
+
+          if (business) {
+            beginEditingListing(business, businessServices);
+          }
+        });
+      });
 
       document.querySelectorAll("[data-archive-id]").forEach((button) => {
         button.addEventListener("click", async () => {
@@ -759,9 +872,77 @@
             return;
           }
 
+          if (state.editingBusinessId === button.dataset.archiveId) {
+            resetFormToCreateMode();
+          }
+
           showMessage("The business was archived and is no longer public.", "success");
           loadListings();
         });
+      });
+    }
+
+    async function beginEditingListing(listingSummary, knownServices) {
+      clearMessage();
+
+      const { data: business, error: businessError } = await supabase
+        .from("businesses")
+        .select(`
+          id,
+          business_name,
+          contact_name,
+          contact_email,
+          contact_phone,
+          website_url,
+          social_url,
+          service_area,
+          description,
+          is_verified
+        `)
+        .eq("id", listingSummary.id)
+        .single();
+
+      if (businessError || !business) {
+        console.error(businessError);
+        showMessage("We could not load that listing for editing. Please try again.", "error");
+        return;
+      }
+
+      state.editingBusinessId = business.id;
+
+      document.querySelector("#business-name").value = business.business_name || "";
+      document.querySelector("#contact-name").value = business.contact_name || "";
+      document.querySelector("#contact-email").value = business.contact_email || "";
+      document.querySelector("#contact-phone").value = business.contact_phone || "";
+      document.querySelector("#website-url").value = business.website_url || "";
+      document.querySelector("#social-url").value = business.social_url || "";
+      document.querySelector("#service-area").value = business.service_area || "Colorado Springs, Colorado";
+      document.querySelector("#business-description").value = business.description || "";
+      document.querySelector("#is-verified").checked = Boolean(business.is_verified);
+
+      serviceList.innerHTML = "";
+
+      if (knownServices.length) {
+        knownServices.forEach((service) => {
+          createServiceRow({
+            category_id: service.category_id || "all-other-services",
+            service_name: service.service_name
+          });
+        });
+      } else {
+        createServiceRow();
+      }
+
+      formHeading.textContent = `Edit Listing: ${business.business_name}`;
+      formIntro.textContent =
+        "Update the public details and exact services below. Saving will replace the listing's current services and category placements.";
+      editNoticeText.textContent = `You are editing ${business.business_name}. Save changes when you are finished, or cancel to start a new listing.`;
+      editNotice.classList.add("visible");
+      publishButton.textContent = "Save Listing Changes";
+
+      document.querySelector(".panel").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
       });
     }
 
@@ -774,7 +955,114 @@
         .filter((service) => service.category_id || service.service_name);
     }
 
-    async function publishBusiness(event) {
+    async function createNewBusiness(businessPayload, selectedCategoryIds, serviceRows) {
+      const { data: business, error: businessError } = await supabase
+        .from("businesses")
+        .insert(businessPayload)
+        .select("id")
+        .single();
+
+      if (businessError) {
+        console.error(businessError);
+        return { error: "We could not create the business listing. Please try again." };
+      }
+
+      if (selectedCategoryIds.length) {
+        const categoryRows = selectedCategoryIds.map((categoryId) => ({
+          business_id: business.id,
+          category_id: categoryId
+        }));
+
+        const { error: categoryError } = await supabase
+          .from("business_categories")
+          .insert(categoryRows);
+
+        if (categoryError) {
+          console.error(categoryError);
+          await supabase.from("businesses").delete().eq("id", business.id);
+          return { error: "We could not save the listing categories. Nothing was published. Please try again." };
+        }
+      }
+
+      const { error: serviceError } = await supabase
+        .from("business_services")
+        .insert(serviceRows.map((service) => ({
+          business_id: business.id,
+          category_id: service.category_id === "all-other-services" ? null : service.category_id,
+          service_name: service.service_name
+        })));
+
+      if (serviceError) {
+        console.error(serviceError);
+        await supabase.from("businesses").delete().eq("id", business.id);
+        return { error: "We could not save the business services. Nothing was published. Please try again." };
+      }
+
+      return { success: true };
+    }
+
+    async function updateExistingBusiness(businessPayload, selectedCategoryIds, serviceRows) {
+      const { error: businessError } = await supabase
+        .from("businesses")
+        .update(businessPayload)
+        .eq("id", state.editingBusinessId);
+
+      if (businessError) {
+        console.error(businessError);
+        return { error: "We could not update the business details. Please try again." };
+      }
+
+      const { error: deleteServicesError } = await supabase
+        .from("business_services")
+        .delete()
+        .eq("business_id", state.editingBusinessId);
+
+      if (deleteServicesError) {
+        console.error(deleteServicesError);
+        return { error: "The business details were saved, but old services could not be replaced. Please try again." };
+      }
+
+      const { error: deleteCategoriesError } = await supabase
+        .from("business_categories")
+        .delete()
+        .eq("business_id", state.editingBusinessId);
+
+      if (deleteCategoriesError) {
+        console.error(deleteCategoriesError);
+        return { error: "The business details were saved, but old categories could not be replaced. Please try again." };
+      }
+
+      if (selectedCategoryIds.length) {
+        const { error: categoryError } = await supabase
+          .from("business_categories")
+          .insert(selectedCategoryIds.map((categoryId) => ({
+            business_id: state.editingBusinessId,
+            category_id: categoryId
+          })));
+
+        if (categoryError) {
+          console.error(categoryError);
+          return { error: "The business details were saved, but the new categories could not be saved. Please try again." };
+        }
+      }
+
+      const { error: serviceError } = await supabase
+        .from("business_services")
+        .insert(serviceRows.map((service) => ({
+          business_id: state.editingBusinessId,
+          category_id: service.category_id === "all-other-services" ? null : service.category_id,
+          service_name: service.service_name
+        })));
+
+      if (serviceError) {
+        console.error(serviceError);
+        return { error: "The business details were saved, but the new services could not be saved. Please try again." };
+      }
+
+      return { success: true };
+    }
+
+    async function saveBusiness(event) {
       event.preventDefault();
       clearMessage();
 
@@ -804,8 +1092,6 @@
           .map((service) => service.category_id)
       )];
 
-      setButtonLoading(true);
-
       const businessPayload = {
         business_name: document.querySelector("#business-name").value.trim(),
         contact_name: document.querySelector("#contact-name").value.trim() || null,
@@ -816,70 +1102,37 @@
         service_area: document.querySelector("#service-area").value.trim() || "Colorado Springs, Colorado",
         description: document.querySelector("#business-description").value.trim() || null,
         status: "approved",
-        is_verified: true,
-        approved_at: new Date().toISOString(),
-        approved_by: state.user.id
+        is_verified: true
       };
 
-      const { data: business, error: businessError } = await supabase
-        .from("businesses")
-        .insert(businessPayload)
-        .select("id")
-        .single();
-
-      if (businessError) {
-        console.error(businessError);
-        setButtonLoading(false);
-        showMessage("We could not create the business listing. Please try again.", "error");
-        return;
+      if (!state.editingBusinessId) {
+        businessPayload.approved_at = new Date().toISOString();
+        businessPayload.approved_by = state.user.id;
       }
 
-      if (selectedCategoryIds.length) {
-        const categoryRows = selectedCategoryIds.map((categoryId) => ({
-          business_id: business.id,
-          category_id: categoryId
-        }));
+      setButtonLoading(true);
 
-        const { error: categoryError } = await supabase
-          .from("business_categories")
-          .insert(categoryRows);
-
-        if (categoryError) {
-          console.error(categoryError);
-          await supabase.from("businesses").delete().eq("id", business.id);
-          setButtonLoading(false);
-          showMessage("We could not save the listing categories. Nothing was published. Please try again.", "error");
-          return;
-        }
-      }
-
-      const serviceRows = services.map((service) => ({
-        business_id: business.id,
-        category_id: service.category_id === "all-other-services" ? null : service.category_id,
-        service_name: service.service_name
-      }));
-
-      const { error: serviceError } = await supabase
-        .from("business_services")
-        .insert(serviceRows);
-
-      if (serviceError) {
-        console.error(serviceError);
-        await supabase.from("businesses").delete().eq("id", business.id);
-        setButtonLoading(false);
-        showMessage("We could not save the business services. Nothing was published. Please try again.", "error");
-        return;
-      }
-
-      businessForm.reset();
-      document.querySelector("#service-area").value = "Colorado Springs, Colorado";
-      resetServiceRows();
+      const result = state.editingBusinessId
+        ? await updateExistingBusiness(businessPayload, selectedCategoryIds, services)
+        : await createNewBusiness(businessPayload, selectedCategoryIds, services);
 
       setButtonLoading(false);
+
+      if (result.error) {
+        showMessage(result.error, "error");
+        return;
+      }
+
+      const wasEditing = Boolean(state.editingBusinessId);
+
+      resetFormToCreateMode();
       showMessage(
-        "Approved business published successfully. It is now visible in the relevant public directory searches.",
+        wasEditing
+          ? "Listing changes were saved successfully."
+          : "Approved business published successfully. It is now visible in the relevant public directory searches.",
         "success"
       );
+
       loadListings();
     }
 
@@ -890,8 +1143,9 @@
       const categoriesLoaded = await loadCategories();
       if (!categoriesLoaded) return;
 
-      addServiceButton.addEventListener("click", createServiceRow);
-      businessForm.addEventListener("submit", publishBusiness);
+      addServiceButton.addEventListener("click", () => createServiceRow());
+      cancelEditButton.addEventListener("click", resetFormToCreateMode);
+      businessForm.addEventListener("submit", saveBusiness);
 
       await loadListings();
     }
