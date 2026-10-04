@@ -476,6 +476,62 @@
       color: var(--blue);
     }
 
+    .reputation-card-section {
+      margin-top: 16px;
+      padding: 14px;
+      background: #fcfdff;
+      border: 1px solid #bfd2e1;
+      border-radius: 11px;
+    }
+
+    .vetted-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      margin-bottom: 9px;
+      color: #0d5935;
+      background: #e9f8ef;
+      border: 1px solid #b8e6c9;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .reputation-card-section h5 {
+      margin: 8px 0 7px;
+      color: var(--navy);
+      font-size: 0.93rem;
+    }
+
+    .reputation-source {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .reputation-source:last-child {
+      border-bottom: 0;
+    }
+
+    .reputation-source a {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .reputation-note {
+      margin: 8px 0 0 !important;
+      color: var(--muted) !important;
+      font-size: 0.82rem;
+    }
+
+    .feedback-snapshot {
+      margin: 7px 0 0 !important;
+      color: var(--text) !important;
+      font-size: 0.9rem;
+    }
+
     .saved-search-area {
       display: flex;
       justify-content: flex-end;
@@ -1358,7 +1414,49 @@ Weed removal"></textarea>
       searchApprovedBusinesses();
     }
 
-    function renderResults(businesses, serviceRows) {
+    function formatReputationDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      return new Intl.DateTimeFormat("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      }).format(date);
+    }
+
+    function formatReputationSource(source) {
+      const sourceName = escapeHtml(source.source_name || "Public source");
+      const sourceUrl = safeExternalUrl(source.source_url || "");
+      const sourceLabel = sourceUrl
+        ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${sourceName}</a>`
+        : `<strong>${sourceName}</strong>`;
+
+      let detail = "Public feedback source";
+
+      if (source.source_type === "recommendation_count" && source.recommendation_count !== null) {
+        detail = `${source.recommendation_count} Neighbor ${source.recommendation_count === 1 ? "Fave" : "Faves"}`;
+      } else if (source.star_rating !== null) {
+        const reviewPart = source.review_count !== null
+          ? ` from ${source.review_count} ${source.review_count === 1 ? "review" : "reviews"}`
+          : "";
+        detail = `${Number(source.star_rating).toFixed(1)} / 5${reviewPart}`;
+      } else if (source.review_count !== null) {
+        detail = `${source.review_count} ${source.review_count === 1 ? "review" : "reviews"}`;
+      } else if (source.recommendation_count !== null) {
+        detail = `${source.recommendation_count} ${source.recommendation_count === 1 ? "recommendation" : "recommendations"}`;
+      }
+
+      const checkedDate = formatReputationDate(source.checked_at);
+      return `
+        <div class="reputation-source">
+          ${sourceLabel}: ${escapeHtml(detail)}
+          ${checkedDate ? `<div class="reputation-note">Checked ${escapeHtml(checkedDate)}</div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderResults(businesses, serviceRows, reputationProfiles = [], reputationSources = []) {
       if (!businesses.length) {
         resultsGrid.innerHTML = "";
         resultsMessage.textContent = state.searchTerm
@@ -1368,6 +1466,8 @@ Weed removal"></textarea>
       }
 
       const servicesByBusiness = {};
+      const profileByBusiness = {};
+      const sourcesByBusiness = {};
 
       serviceRows.forEach((service) => {
         if (!servicesByBusiness[service.business_id]) {
@@ -1376,12 +1476,49 @@ Weed removal"></textarea>
         servicesByBusiness[service.business_id].push(service.service_name);
       });
 
+      reputationProfiles.forEach((profile) => {
+        profileByBusiness[profile.business_id] = profile;
+      });
+
+      reputationSources.forEach((source) => {
+        if (!sourcesByBusiness[source.business_id]) {
+          sourcesByBusiness[source.business_id] = [];
+        }
+        sourcesByBusiness[source.business_id].push(source);
+      });
+
       resultsMessage.textContent = `${businesses.length} approved ${businesses.length === 1 ? "business" : "businesses"} found.`;
 
       resultsGrid.innerHTML = businesses.map((business) => {
         const services = servicesByBusiness[business.id] || [];
         const websiteUrl = safeExternalUrl(business.website_url);
         const socialUrl = safeExternalUrl(business.social_url);
+        const profile = profileByBusiness[business.id];
+        const publicSources = sourcesByBusiness[business.id] || [];
+        const vettedDate = formatReputationDate(profile?.vetted_at);
+        const hasReputation = Boolean(profile?.is_locally_vetted || profile?.public_feedback_snapshot || publicSources.length);
+
+        const reputationHtml = hasReputation ? `
+          <section class="reputation-card-section">
+            ${profile?.is_locally_vetted ? `
+              <div class="vetted-badge">✓ Locally Vetted Profile</div>
+              <p class="reputation-note">
+                ${escapeHtml(profile.vetted_public_note || "Profile information and publicly available reputation sources were reviewed by Springs Local.")}
+                ${vettedDate ? ` Reviewed ${escapeHtml(vettedDate)}.` : ""}
+              </p>
+            ` : ""}
+
+            ${publicSources.length ? `
+              <h5>Community Reputation</h5>
+              ${publicSources.map(formatReputationSource).join("")}
+            ` : ""}
+
+            ${profile?.public_feedback_snapshot ? `
+              <h5>Public-feedback snapshot</h5>
+              <p class="feedback-snapshot">${escapeHtml(profile.public_feedback_snapshot).replaceAll("\n", "<br>")}</p>
+            ` : ""}
+          </section>
+        ` : "";
 
         return `
           <article class="business-card">
@@ -1393,6 +1530,7 @@ Weed removal"></textarea>
                 ${services.slice(0, 8).map((service) => `<span class="tag">${escapeHtml(service)}</span>`).join("")}
               </div>
             ` : ""}
+            ${reputationHtml}
             <div class="business-links">
               ${business.contact_phone ? `<a href="tel:${escapeHtml(business.contact_phone.replace(/[^0-9+]/g, ""))}">Call</a>` : ""}
               ${business.contact_email ? `<a href="mailto:${escapeHtml(business.contact_email)}">Email</a>` : ""}
@@ -1496,7 +1634,37 @@ Weed removal"></textarea>
       const approvedBusinessIds = (businesses || []).map((business) => business.id);
       const visibleServices = (matchingServices || []).filter((service) => approvedBusinessIds.includes(service.business_id));
 
-      renderResults(businesses || [], visibleServices);
+      let reputationProfiles = [];
+      let reputationSources = [];
+
+      if (approvedBusinessIds.length) {
+        const [profilesResult, sourcesResult] = await Promise.all([
+          supabase
+            .from("business_reputation_profiles")
+            .select("business_id, is_locally_vetted, vetted_at, vetted_public_note, public_feedback_snapshot")
+            .in("business_id", approvedBusinessIds),
+          supabase
+            .from("business_reputation_sources")
+            .select("business_id, source_name, source_type, source_url, star_rating, review_count, recommendation_count, checked_at")
+            .in("business_id", approvedBusinessIds)
+            .eq("is_public", true)
+            .order("created_at", { ascending: true })
+        ]);
+
+        if (profilesResult.error) {
+          console.error(profilesResult.error);
+        } else {
+          reputationProfiles = profilesResult.data || [];
+        }
+
+        if (sourcesResult.error) {
+          console.error(sourcesResult.error);
+        } else {
+          reputationSources = sourcesResult.data || [];
+        }
+      }
+
+      renderResults(businesses || [], visibleServices, reputationProfiles, reputationSources);
       saveSearchButton.disabled = !state.session?.user;
     }
 
